@@ -1,18 +1,15 @@
 #!/usr/bin/env python3
 
-import postgresql
 import flask
 import json
+
+import psycopg2
 
 app = flask.Flask(__name__)
 
 
-# disables JSON pretty-printing in flask.jsonify
-# app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
-
-
 def db_conn():
-    return postgresql.open('pq://eax@localhost/eax')
+    return psycopg2.connect("host='192.168.48.33' dbname='LoadRX' user='postgres' password='11111' port='5436'")
 
 
 @app.route('/')
@@ -26,14 +23,29 @@ def employee(user):
     return result
 
 
-@app.route('/api/1.0/themes', methods=['GET'])
-def get_themes():
-    with db_conn() as db:
-        tuples = db.query("SELECT id, title, url FROM themes")
-        themes = []
-        for (id, title, url) in tuples:
-            themes.append({"id": id, "title": title, "url": url})
-        return resp(200, {"themes": themes})
+@app.route('/jobs/<string:performer>/<uuid:discriminator>/<string:filter>', methods=['GET'])
+def get_job(performer, discriminator, filter):
+    # добавить обработку, если filter is null
+    query = "SELECT a.id FROM sungero_wf_assignment a " \
+            + "INNER JOIN sungero_core_recipient r " \
+            + "ON r.id = a.performer " \
+            + "INNER JOIN sungero_core_login l " \
+            + "ON r.login = l.id AND l.loginname = '{0}' ".format(performer) \
+            + "WHERE a.status = 'InProcess' " \
+            + "AND a.discriminator = '{0}' ".format(discriminator) \
+            + "AND a.subject like '%{0}%' ".format(filter) \
+            + "ORDER BY created desc " \
+            + "LIMIT 1"
+
+    with db_conn() as connection:
+        cur = connection.cursor()
+        cur.execute(query)
+        result = cur.fetchone()
+        if result == None:
+            result = resp(400, None)
+        else:
+            result = resp(200, result[0])
+        return result
 
 
 def resp(code, data):
