@@ -2,8 +2,6 @@
 
 import flask
 import json
-
-import psycopg2
 import jobs
 import users
 
@@ -12,7 +10,7 @@ app = flask.Flask(__name__)
 
 @app.route('/')
 def root():
-    return "Сервис для получения данных DirectumRX"
+    return "Service for getting data from DirectumRX"
 
 
 @app.route('/users/<uuid:jobtype>/<int:count>', methods=['GET'])
@@ -57,4 +55,5 @@ def to_json(data):
 
 if __name__ == '__main__':
     app.debug = True  # enables auto reload during development
-    app.run()
+    app.run(port=5555)
+    # app.run()
