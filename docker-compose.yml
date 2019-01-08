@@ -1,0 +1,13 @@
+version: '2'
+services:
+  rxdata:
+    image: localhost:5000/loadrxdata
+    ports:
+      - '5555:5555'
+    environment:
+      - ENGINE=psql
+      - HOST=92.168.48.33
+      - DB=LoadRX
+      - USER=postgres
+      - PWD=11111
+      - PORT=5436
