@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
-import psycopg2
 import db
 
 
-def get_job_with_filter(performer, discriminator, filter=""):
-    if filter == None:
+def get_job_with_filter(dbconn, performer, discriminator, filter=""):
+    if filter is None:
         filter = ""
     query = "SELECT a.id FROM sungero_wf_assignment a " \
             + "INNER JOIN sungero_core_recipient r " \
@@ -18,9 +18,8 @@ def get_job_with_filter(performer, discriminator, filter=""):
             + "ORDER BY created desc " \
             + "LIMIT 1"
 
-    with db.db_conn() as connection:
+    with dbconn.connection()  as connection:
         cur = connection.cursor()
         cur.execute(query)
         result = cur.fetchone()
-
         return result
