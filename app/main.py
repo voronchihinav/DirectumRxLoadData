@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import flask
-
+import os
+from flask import send_from_directory
 from argparse import ArgumentParser
 import response
 import jobs
@@ -17,6 +18,12 @@ app = flask.Flask(__name__)
 @app.route('/')
 def root():
     return "Сервис для получения вспомогательных данных из DirectumRX"
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
 @app.route('/users/<uuid:jobtype>/<int:count>', methods=['GET'])
@@ -42,10 +49,12 @@ def get_doc(author, discriminator):
     results = docs.get_doc_with_filter(dbconn, author, discriminator)
     return response.get_scalar_result(results)
 
+
 @app.route('/docs/<int:author>', methods=['GET'])
 def get_any_doc(author):
     results = docs.get_any_doc(dbconn, author)
     return response.get_scalar_result(results)
+
 
 if __name__ == '__main__':
     parser = ArgumentParser()
@@ -58,6 +67,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     print(args)
     dbconn = db.dbconnection(args.engine, args.host, args.dbname, args.username, args.password, args.port)
-    app.debug = True  # enables auto reload during development
+    # app.debug = True  # enables auto reload during development
     app.run(host='0.0.0.0', port=5555)
-    # app.run()
+    app.run()
