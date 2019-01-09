@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import db
-
-
 def get_logins_with_jobs_inprocess(dbconn, job_type, count_jobs):
     query = "SELECT l.loginname " \
             + "FROM sungero_wf_assignment a " \

@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import flask
-import json
+
 from argparse import ArgumentParser
+import response
 import jobs
+import docs
 import users
 import db
 
@@ -14,52 +16,36 @@ app = flask.Flask(__name__)
 
 @app.route('/')
 def root():
-    return "Сервис for getting data from DirectumRX"
+    return "Сервис для получения вспомогательных данных из DirectumRX"
 
 
 @app.route('/users/<uuid:jobtype>/<int:count>', methods=['GET'])
 def get_users(jobtype, count):
     result = users.get_logins_with_jobs_inprocess(dbconn, jobtype, count)
-    return get_multi_result(result)
+    return response.get_multi_result(result)
 
 
-@app.route('/jobs/<string:performer>/<uuid:discriminator>', methods=['GET'])
+@app.route('/jobs/<uuid:discriminator>/<string:performer>', methods=['GET'])
 def get_job(performer, discriminator):
-    result = jobs.get_job_with_filter(dbconn, performer, discriminator)
-    return get_scalar_result(result)
+    results = jobs.get_job_with_filter(dbconn, performer, discriminator)
+    return response.get_scalar_result(results)
 
 
-@app.route('/jobs/<string:performer>/<uuid:discriminator>/<string:filter>', methods=['GET'])
+@app.route('/jobs/<uuid:discriminator>/<int:performer>/<string:filter>', methods=['GET'])
 def ex_get_job(performer, discriminator, filter):
-    result = jobs.get_job_with_filter(dbconn, performer, discriminator, filter)
-    return get_scalar_result(result)
+    results = jobs.get_job_with_filter(dbconn, performer, discriminator, filter)
+    return response.get_scalar_result(results)
 
 
-def get_multi_result(result):
-    if result is None:
-        return resp(400, None)
-    else:
-        return resp(200, result)
+@app.route('/docs/<uuid:discriminator>/<int:author>', methods=['GET'])
+def get_doc(author, discriminator):
+    results = docs.get_doc_with_filter(dbconn, author, discriminator)
+    return response.get_scalar_result(results)
 
-
-def get_scalar_result(result):
-    if result is None:
-        return resp(400, None)
-    else:
-        return resp(200, result[0])
-
-
-def resp(code, data):
-    return flask.Response(
-        status=code,
-        mimetype="application/json",
-        response=to_json(data)
-    )
-
-
-def to_json(data):
-    return json.dumps(data) + "\n"
-
+@app.route('/docs/<int:author>', methods=['GET'])
+def get_any_doc(author):
+    results = docs.get_any_doc(dbconn, author)
+    return response.get_scalar_result(results)
 
 if __name__ == '__main__':
     parser = ArgumentParser()
