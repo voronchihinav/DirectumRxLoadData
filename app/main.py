@@ -19,6 +19,12 @@ app = flask.Flask(__name__)
 def root():
     return "Сервис для получения вспомогательных данных из DirectumRX"
 
+@app.route("/help")
+def site_map():
+    endpoints = [rule.rule for rule in app.url_map.iter_rules()
+                 if rule.endpoint != 'static']
+    return response.get_multi_result(endpoints)
+
 
 @app.route('/favicon.ico')
 def favicon():
