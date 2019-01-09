@@ -31,7 +31,7 @@ def get_job(performer, discriminator):
 
 @app.route('/jobs/<string:performer>/<uuid:discriminator>/<string:filter>', methods=['GET'])
 def ex_get_job(performer, discriminator, filter):
-    result = jobs.get_job_with_filter(performer, discriminator, filter)
+    result = jobs.get_job_with_filter(dbconn, performer, discriminator, filter)
     return get_scalar_result(result)
 
 
@@ -73,5 +73,5 @@ if __name__ == '__main__':
     print(args)
     dbconn = db.dbconnection(args.engine, args.host, args.dbname, args.username, args.password, args.port)
     app.debug = True  # enables auto reload during development
-    app.run(port=5555)
+    app.run(host='0.0.0.0', port=5555)
     # app.run()

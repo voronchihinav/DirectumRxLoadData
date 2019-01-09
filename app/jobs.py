@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import db
-
 
 def get_job_with_filter(dbconn, performer, discriminator, filter=""):
     if filter is None:
@@ -18,7 +16,7 @@ def get_job_with_filter(dbconn, performer, discriminator, filter=""):
             + "ORDER BY created desc " \
             + "LIMIT 1"
 
-    with dbconn.connection()  as connection:
+    with dbconn.connection() as connection:
         cur = connection.cursor()
         cur.execute(query)
         result = cur.fetchone()

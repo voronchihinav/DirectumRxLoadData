@@ -4,11 +4,21 @@
 import psycopg2
 
 
-def dbconnection(engine, host, db, user='postgres', password='11111', port=None):
-    def connection():
-        if engine == 'psql':
+class dbconnection():
+
+    def __init__(self, engine, host, db, user='postgres', password='11111', port=None):
+        self.engine = engine
+        self.host = host
+        self.db = db
+        self.user = user
+        self.password = password
+        self.port = port
+
+
+    def connection(self):
+        if self.engine == 'psql':
             connectionstring = "host='{0}' dbname='{1}' user='{2}' password='{3}' port='{4}'" \
-                .format(host, db, user, password, port)
+                .format(self.host, self.db, self.user, self.password, self.port)
             return psycopg2.connect(connectionstring)
 
 
