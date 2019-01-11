@@ -73,6 +73,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     print(args)
     dbconn = db.dbconnection(args.engine, args.host, args.dbname, args.username, args.password, args.port)
-    # app.debug = True  # enables auto reload during development
+    app.debug = True  # enables auto reload during development
     app.run(host='0.0.0.0', port=5555)
     app.run()
