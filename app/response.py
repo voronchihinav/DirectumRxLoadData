@@ -30,4 +30,4 @@ def resp(code, data):
 
 
 def to_json(data):
-    return json.dumps(data) + "\n"
+    return json.dumps(data)
