@@ -23,3 +23,24 @@ def get_job_with_filter(dbconn, performer, discriminator, filter=""):
         cur.execute(query)
         result = cur.fetchall()
         return result
+
+
+
+def get_all_jobs(dbconn, performer, discriminator, skip):
+    query = "SELECT "
+
+    query = query + "a.id FROM sungero_wf_assignment a " \
+            + "WHERE a.performer = {0} ".format(performer) \
+            + "AND a.status = 'InProcess' " \
+            + "AND a.discriminator = '{0}' ".format(discriminator) \
+            + "ORDER BY created desc "
+    if dbconn.engine == 'psql':
+        query = query + "OFFSET {0}".format(skip)
+    if dbconn.engine == 'mssql':
+        query = query + "OFFSET ({0}) ROWS".format(skip)
+
+    with dbconn.connection() as connection:
+        cur = connection.cursor()
+        cur.execute(query)
+        result = cur.fetchall()
+        return result

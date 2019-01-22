@@ -19,6 +19,7 @@ app = flask.Flask(__name__)
 def root():
     return "Сервис для получения вспомогательных данных из DirectumRX"
 
+
 @app.route("/help")
 def site_map():
     endpoints = [rule.rule for rule in app.url_map.iter_rules()
@@ -31,10 +32,12 @@ def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
+
 @app.route('/users/notice/<uuid:noticetype>/<int:count>', methods=['GET'])
 def get_users_with_notices(noticetype, count):
     result = users.get_logins_with_unread_notices(dbconn, noticetype, count)
     return response.get_multi_result(result)
+
 
 @app.route('/users/<uuid:jobtype>/<int:count>', methods=['GET'])
 def get_users(jobtype, count):
@@ -46,6 +49,12 @@ def get_users(jobtype, count):
 def get_job(performer, discriminator):
     results = jobs.get_job_with_filter(dbconn, performer, discriminator)
     return response.get_scalar_result(results)
+
+
+@app.route('/alljobs/<uuid:discriminator>/<string:performer>/<int:skip>', methods=['GET'])
+def get_all_job_inprocess(performer, discriminator, skip):
+    results = jobs.get_all_jobs(dbconn, performer, discriminator, skip)
+    return response.get_multi_result(results)
 
 
 @app.route('/jobs/<uuid:discriminator>/<int:performer>/<string:filter>', methods=['GET'])
