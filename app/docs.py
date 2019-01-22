@@ -11,6 +11,7 @@ def get_doc_with_filter(dbconn, author, discriminator, filter=""):
             + "WHERE d.author = {0} ".format(author) \
             + "AND d.discriminator = '{0}' ".format(discriminator) \
             + "AND d.name like '%{0}%' ".format(filter) \
+            + "AND d.hasversions = 'true' " \
             + "ORDER BY d.created desc "
     if dbconn.engine == 'psql':
         query = query \
@@ -29,6 +30,7 @@ def get_any_doc(dbconn, author):
 
     query = query + "d.id FROM sungero_content_edoc d " \
             + "WHERE d.author = {0} ".format(author) \
+            + "AND d.hasversions = 'true' " \
             + "ORDER BY d.created desc "
     if dbconn.engine == 'psql':
         query = query \
