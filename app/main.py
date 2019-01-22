@@ -63,6 +63,18 @@ def ex_get_job(performer, discriminator, filter):
     return response.get_scalar_result(results)
 
 
+@app.route('/task/<uuid:discriminator>/<string:performer>', methods=['GET'])
+def get_task(performer, discriminator):
+    results = jobs.get_task_with_filter(dbconn, performer, discriminator)
+    return response.get_scalar_result(results)
+
+
+@app.route('/task/<uuid:discriminator>/<int:performer>/<string:filter>', methods=['GET'])
+def ex_get_task(performer, discriminator, filter):
+    results = jobs.get_task_with_filter(dbconn, performer, discriminator, filter)
+    return response.get_scalar_result(results)
+
+
 @app.route('/docs/<uuid:discriminator>/<int:author>', methods=['GET'])
 def get_doc(author, discriminator):
     results = docs.get_doc_with_filter(dbconn, author, discriminator)
