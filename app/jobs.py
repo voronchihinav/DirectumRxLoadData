@@ -45,6 +45,26 @@ def get_all_jobs(dbconn, performer, discriminator, skip):
         result = cur.fetchall()
         return result
 
+
+def get_all_notices(dbconn, performer, discriminator, skip):
+    query = "SELECT "
+
+    query = query + "a.id FROM sungero_wf_assignment a " \
+            + "WHERE a.performer = {0} ".format(performer) \
+            + "AND a.discriminator = '{0}' ".format(discriminator) \
+            + "AND IsRead = 0 " \
+            + "ORDER BY created desc "
+    if dbconn.engine == 'psql':
+        query = query + "OFFSET {0}".format(skip)
+    if dbconn.engine == 'mssql':
+        query = query + "OFFSET ({0}) ROWS".format(skip)
+
+    with dbconn.connection() as connection:
+        cur = connection.cursor()
+        cur.execute(query)
+        result = cur.fetchall()
+        return result
+
     
     
 def get_task_with_filter(dbconn, author, discriminator, filter=""):

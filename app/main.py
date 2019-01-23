@@ -56,6 +56,11 @@ def get_all_job_inprocess(performer, discriminator, skip):
     results = jobs.get_all_jobs(dbconn, performer, discriminator, skip)
     return response.get_multi_result(results)
 
+@app.route('/allnotices/<uuid:discriminator>/<string:performer>/<int:skip>', methods=['GET'])
+def get_all_unreadnotices(performer, discriminator, skip):
+    results = jobs.get_all_notices(dbconn, performer, discriminator, skip)
+    return response.get_multi_result(results)
+
 
 @app.route('/jobs/<uuid:discriminator>/<int:performer>/<string:filter>', methods=['GET'])
 def ex_get_job(performer, discriminator, filter):
