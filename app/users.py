@@ -28,8 +28,12 @@ def get_logins_with_unread_notices(dbconn, job_type, count_notices):
             + "ON r.id = a.performer " \
             + "INNER JOIN sungero_core_login l " \
             + "ON r.login = l.id " \
-            + "WHERE a.discriminator ='{0}' ".format(job_type) \
-            + "GROUP BY l.loginname " \
+            + "WHERE a.discriminator ='{0}' ".format(job_type)
+    if dbconn.engine == 'psql':
+        query = query + "AND a.IsRead = false "
+    else:
+        query = query  + "AND a.IsRead = 0 "
+    query = query + "GROUP BY l.loginname " \
             + "HAVING count(*) > {0} ".format(count_notices) \
             + "ORDER BY count(*) desc"
 

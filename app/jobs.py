@@ -44,7 +44,6 @@ def get_all_jobs(dbconn, performer, discriminator, skip):
         cur.execute(query)
         result = cur.fetchall()
         return result
-#-e mssql -ht otrxhost_02\S2016 -d DirX_Load_Work -n sa -p OTRXPassw0rd!@
 
 def get_all_notices(dbconn, performer, discriminator, skip):
     query = "SELECT "
@@ -53,10 +52,10 @@ def get_all_notices(dbconn, performer, discriminator, skip):
             + "WHERE a.performer = {0} ".format(performer) \
             + "AND a.discriminator = '{0}' ".format(discriminator)
     if dbconn.engine == 'psql':
-        query = query + "AND IsRead = false "
+        query = query + "AND a.IsRead = false "
     else:
-        query = query  + "AND IsRead = 0 "
-    query = query + "ORDER BY created desc "
+        query = query  + "AND a.IsRead = 0 "
+    query = query + "ORDER BY a.created desc "
     if dbconn.engine == 'psql':
         query = query + "OFFSET {0}".format(skip)
     if dbconn.engine == 'mssql':
