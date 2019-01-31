@@ -1,6 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+def get_employees(dbconn, prefix):
+    query = "SELECT e.Id, l.loginname, e.department " \
+            + "FROM sungero_core_recipient e " \
+            + "INNER JOIN sungero_core_login l " \
+            + "ON e.login = l.Id " \
+            + "WHERE l.loginname like '{0}%".format(prefix)
+
+    with dbconn.connection() as connection:
+        cur = connection.cursor()
+        cur.execute(query)
+        result = cur.fetchall()
+
+        return result
+
 def get_logins_with_jobs_inprocess(dbconn, job_type, count_jobs):
     query = "SELECT l.loginname " \
             + "FROM sungero_wf_assignment a " \

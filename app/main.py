@@ -38,9 +38,13 @@ def get_users_with_notices(noticetype, count):
     result = users.get_logins_with_unread_notices(dbconn, noticetype, count)
     return response.get_multi_result(result)
 
+@app.route('/users/<string:prefix>', methods=['GET'])
+def get_users(prefix):
+    result = users.get_employees(dbconn, prefix)
+    return response.get_multi_result(result)
 
 @app.route('/users/<uuid:jobtype>/<int:count>', methods=['GET'])
-def get_users(jobtype, count):
+def get_users_with_inprocess_jobs(jobtype, count):
     result = users.get_logins_with_jobs_inprocess(dbconn, jobtype, count)
     return response.get_multi_result(result)
 
