@@ -48,6 +48,11 @@ def get_users_with_inprocess_jobs(jobtype, count):
     result = users.get_logins_with_jobs_inprocess(dbconn, jobtype, count)
     return response.get_multi_result(result)
 
+@app.route('/users/<string:prefix>/<int:count_all_users>', methods=['GET'])
+def get_users_logins(prefix, count_all_users):
+    result = users.get_users_logins(dbconn, prefix, count_all_users)
+    return response.get_multi_result(result)
+
 
 @app.route('/jobs/<uuid:discriminator>/<string:performer>', methods=['GET'])
 def get_job(performer, discriminator):
