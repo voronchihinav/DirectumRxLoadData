@@ -16,6 +16,20 @@ def get_employees(dbconn, prefix):
 
         return result
 
+def get_persons(dbconn):
+    query = "SELECT Id, LastName, FirstName " \
+            "FROM Sungero_Parties_Counterparty " \
+            "WHERE discriminator ='f5509cdc-ac0c-4507-a4d3-61d7a0a9b6f6'"
+
+
+    with dbconn.connection() as connection:
+        cur = connection.cursor()
+        cur.execute(query)
+        result = cur.fetchall()
+
+        return result
+
+
 def get_logins_with_jobs_inprocess(dbconn, job_type, count_jobs):
     query = "SELECT l.loginname " \
             + "FROM sungero_wf_assignment a " \
