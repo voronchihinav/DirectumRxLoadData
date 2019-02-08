@@ -67,7 +67,7 @@ def get_users_logins(dbconn, prefix, count_all_users):
     if prefix == 'lu':
         koef = 0.8
     if dbconn.engine == 'mssql':
-        query = query + " TOP {0}*{1} ".format(count_all_users, koef)
+        query = query + " TOP ({0}*{1}) ".format(count_all_users, koef)
     query = query + "l.loginname " \
             + "FROM sungero_core_recipient r " \
             + "INNER JOIN sungero_core_login l " \
