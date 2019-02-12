@@ -63,9 +63,9 @@ def get_logins_with_unread_notices(dbconn, job_type, count_notices):
 def get_users_logins(dbconn, prefix, count_all_users):
     query = "SELECT "
     if prefix == 'mu' or prefix == 'cu':
-        koef = 0.1
+        koef = "1/10"
     if prefix == 'lu':
-        koef = 0.8
+        koef = "8/10"
     if dbconn.engine == 'mssql':
         query = query + " TOP ({0}*{1}) ".format(count_all_users, koef)
     query = query + "l.loginname " \
@@ -73,7 +73,7 @@ def get_users_logins(dbconn, prefix, count_all_users):
             + "INNER JOIN sungero_core_login l " \
             + "ON r.login = l.id " \
             + "WHERE l.loginname like '{0}%' ".format(prefix) \
-            + "ORDER BY R.DEPARTMENT_COMPANY_SUNGERO ASC "
+            + "ORDER BY R.DEPARTMENT_COMPANY_SUNGERO DESC "
     if dbconn.engine == 'psql':
         query = query \
                 + "LIMIT '{0}'*{1} ".format(count_all_users, koef)
