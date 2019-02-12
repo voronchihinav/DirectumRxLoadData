@@ -25,7 +25,6 @@ def get_job_with_filter(dbconn, performer, discriminator, filter=""):
         return result
 
 
-
 def get_all_jobs(dbconn, performer, discriminator, skip):
     query = "SELECT "
 
@@ -45,6 +44,7 @@ def get_all_jobs(dbconn, performer, discriminator, skip):
         result = cur.fetchall()
         return result
 
+
 def get_all_notices(dbconn, performer, discriminator, skip):
     query = "SELECT "
 
@@ -54,7 +54,7 @@ def get_all_notices(dbconn, performer, discriminator, skip):
     if dbconn.engine == 'psql':
         query = query + "AND a.IsRead = false "
     else:
-        query = query  + "AND a.IsRead = 0 "
+        query = query + "AND a.IsRead = 0 "
     query = query + "ORDER BY a.created desc "
     if dbconn.engine == 'psql':
         query = query + "OFFSET {0}".format(skip)
@@ -67,8 +67,26 @@ def get_all_notices(dbconn, performer, discriminator, skip):
         result = cur.fetchall()
         return result
 
-    
-    
+
+def get_notice(dbconn, performer, discriminator):
+    query = "SELECT "
+
+    query = query + "a.id FROM sungero_wf_assignment a " \
+            + "WHERE a.performer = {0} ".format(performer) \
+            + "AND a.discriminator = '{0}' ".format(discriminator)
+    if dbconn.engine == 'psql':
+        query = query + "AND a.IsRead = false "
+    else:
+        query = query + "AND a.IsRead = 0 "
+    query = query + "ORDER BY a.created desc "
+
+    with dbconn.connection() as connection:
+        cur = connection.cursor()
+        cur.execute(query)
+        result = cur.fetchall()
+        return result
+
+
 def get_task_with_filter(dbconn, author, discriminator, filter=""):
     if filter is None:
         filter = ""

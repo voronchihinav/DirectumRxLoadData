@@ -38,15 +38,18 @@ def get_users_with_notices(noticetype, count):
     result = users.get_logins_with_unread_notices(dbconn, noticetype, count)
     return response.get_multi_result(result)
 
+
 @app.route('/users/<string:prefix>', methods=['GET'])
 def get_users(prefix):
     result = users.get_employees(dbconn, prefix)
     return response.get_multi_result(result)
 
+
 @app.route('/users/<uuid:jobtype>/<int:count>', methods=['GET'])
 def get_users_with_inprocess_jobs(jobtype, count):
     result = users.get_logins_with_jobs_inprocess(dbconn, jobtype, count)
     return response.get_multi_result(result)
+
 
 @app.route('/users/<string:prefix>/<int:count_all_users>', methods=['GET'])
 def get_users_logins(prefix, count_all_users):
@@ -65,10 +68,17 @@ def get_all_job_inprocess(performer, discriminator, skip):
     results = jobs.get_all_jobs(dbconn, performer, discriminator, skip)
     return response.get_multi_result(results)
 
+
 @app.route('/allnotices/<uuid:discriminator>/<string:performer>/<int:skip>', methods=['GET'])
 def get_all_unreadnotices(performer, discriminator, skip):
     results = jobs.get_all_notices(dbconn, performer, discriminator, skip)
     return response.get_multi_result(results)
+
+
+@app.route('/notice/<uuid:discriminator>/<string:performer>', methods=['GET'])
+def get_unreadnotice(performer, discriminator):
+    results = jobs.get_notice(dbconn, performer, discriminator)
+    return response.get_scalar_result(results)
 
 
 @app.route('/jobs/<uuid:discriminator>/<int:performer>/<string:filter>', methods=['GET'])
