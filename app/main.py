@@ -75,9 +75,9 @@ def get_all_unreadnotices(performer, discriminator, skip):
     return response.get_multi_result(results)
 
 
-@app.route('/notice/<uuid:discriminator>/<string:performer>', methods=['GET'])
-def get_unreadnotice(performer, discriminator):
-    results = jobs.get_notice(dbconn, performer, discriminator)
+@app.route('/notice/<uuid:discriminator>/<string:performer>/<string:filter>', methods=['GET'])
+def get_unreadnotice(performer, discriminator, filter):
+    results = jobs.get_notice_with_filter(dbconn, performer, discriminator, filter)
     return response.get_scalar_result(results)
 
 

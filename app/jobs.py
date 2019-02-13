@@ -68,12 +68,14 @@ def get_all_notices(dbconn, performer, discriminator, skip):
         return result
 
 
-def get_notice(dbconn, performer, discriminator):
+def get_notice_with_filter(dbconn, performer, discriminator, filter=""):
+    if filter is None:
+        filter = ""
     query = "SELECT "
-
     query = query + "a.id FROM sungero_wf_assignment a " \
             + "WHERE a.performer = {0} ".format(performer) \
-            + "AND a.discriminator = '{0}' ".format(discriminator)
+            + "AND a.discriminator = '{0}' ".format(discriminator) \
+            + "AND a.subject like '%{0}%' ".format(filter)
     if dbconn.engine == 'psql':
         query = query + "AND a.IsRead = false "
     else:
