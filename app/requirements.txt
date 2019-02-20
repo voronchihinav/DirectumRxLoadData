@@ -5,3 +5,4 @@ MarkupSafe
 psycopg2-binary
 pymssql
 Werkzeug
+flasgger

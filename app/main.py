@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import flask
+from flasgger import Swagger
 import os
-from flask import send_from_directory
+from flask import send_from_directory, jsonify
 from argparse import ArgumentParser
 import response
 import jobs
@@ -13,6 +14,7 @@ import db
 
 dbconn = None
 app = flask.Flask(__name__)
+swagger = Swagger(app, )
 
 
 @app.route('/')
@@ -41,9 +43,20 @@ def get_users_with_notices(noticetype, count):
 
 @app.route('/users/<string:prefix>', methods=['GET'])
 def get_users(prefix):
+    """Return list of users with prefix
+        ---
+        parameters:
+          - name: prefix
+            type: string
+            required: true
+            default: lu
+            description: Users prefix
+        responses:
+          200:
+            description: Return list of users with prefix
+        """
     result = users.get_employees(dbconn, prefix)
-    return response.get_multi_result(result)
-
+    return jsonify(result)
 
 
 @app.route('/persons', methods=['GET'])
