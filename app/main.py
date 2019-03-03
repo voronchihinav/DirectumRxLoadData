@@ -12,21 +12,26 @@ import docs
 import users
 import db
 
+template = {
+  "swagger": "2.0",
+  "info": {
+    "title": "DirectumRXLoadDataService",
+    "description": "API for load data from DirectumRX",
+    "version": "0.1"
+  },
+
+  "operationId": "getmyData"
+}
+
+
 dbconn = None
 app = flask.Flask(__name__)
-swagger = Swagger(app, )
+swagger = Swagger(app, template=template)
 
 
 @app.route('/')
 def root():
     return "Сервис для получения вспомогательных данных из DirectumRX"
-
-
-@app.route("/help")
-def site_map():
-    endpoints = [rule.rule for rule in app.url_map.iter_rules()
-                 if rule.endpoint != 'static']
-    return response.get_multi_result(endpoints)
 
 
 @app.route('/favicon.ico')
@@ -37,14 +42,33 @@ def favicon():
 
 @app.route('/users/notice/<uuid:noticetype>/<int:count>', methods=['GET'])
 def get_users_with_notices(noticetype, count):
+    """Return list of users with unread notices in inbox
+            ---
+            tags:
+                - users
+            parameters:
+              - name: noticetype
+                type: uuid
+                required: true
+                description: Guid of notice type
+              - name: count
+                type: int
+                required: true
+                description: Count notices
+            responses:
+              200:
+                description: Return list of users
+            """
     result = users.get_logins_with_unread_notices(dbconn, noticetype, count)
-    return response.get_multi_result(result)
+    return jsonify(result)
 
 
 @app.route('/users/<string:prefix>', methods=['GET'])
-def get_users(prefix):
+def get_users(prefix='lu'):
     """Return list of users with prefix
         ---
+        tags:
+            - users
         parameters:
           - name: prefix
             type: string
@@ -61,8 +85,16 @@ def get_users(prefix):
 
 @app.route('/persons', methods=['GET'])
 def get_persons():
+    """Return list of person
+            ---
+            tags:
+                - persons
+            responses:
+              200:
+                description: Return list of persons
+            """
     result = users.get_persons(dbconn)
-    return response.get_multi_result(result)
+    return jsonify(result)
 
 
 @app.route('/users/<uuid:jobtype>/<int:count>', methods=['GET'])
