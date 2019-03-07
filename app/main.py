@@ -47,12 +47,16 @@ def get_users_with_notices(noticetype, count):
             tags:
                 - users
             parameters:
-              - name: noticetype
-                type: uuid
+              - in: path
+                name: noticetype
+                type: string
+                format: uuid
                 required: true
                 description: Guid of notice type
-              - name: count
-                type: int
+              - in: path
+                name: count
+                type: integer
+                format: int
                 required: true
                 description: Count notices
             responses:
@@ -70,7 +74,8 @@ def get_users(prefix='lu'):
         tags:
             - users
         parameters:
-          - name: prefix
+          - in: path
+            name: prefix
             type: string
             required: true
             default: lu
