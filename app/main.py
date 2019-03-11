@@ -104,66 +104,344 @@ def get_persons():
 
 @app.route('/users/<uuid:jobtype>/<int:count>', methods=['GET'])
 def get_users_with_inprocess_jobs(jobtype, count):
+    """Return list of in process assignments
+            ---
+            tags:
+                - users
+            parameters:
+              - in: path
+                name: jobtype
+                type: string
+                format: uuid
+                required: true
+                description: Guid of task
+              - in: path
+                name: count
+                type: integer
+                format: int
+                required: true
+                description: Count tasks
+            responses:
+              200:
+                description: Return list of assignments
+            """
     result = users.get_logins_with_jobs_inprocess(dbconn, jobtype, count)
-    return response.get_multi_result(result)
+    return jsonify(result)
 
 
 @app.route('/users/<string:prefix>/<int:count_all_users>', methods=['GET'])
 def get_users_logins(prefix, count_all_users):
+    """Return list of users
+            ---
+            tags:
+                - users
+            parameters:
+              - in: path
+                name: prefix
+                type: string
+                required: true
+                description: Users prefix
+              - in: path
+                name: count_all_users
+                type: integer
+                format: int
+                required: true
+                description: Count of all users in test
+            responses:
+              200:
+                description: Return list of users
+            """
     result = users.get_users_logins(dbconn, prefix, count_all_users)
     return response.get_multi_result(result)
 
 
 @app.route('/jobs/<uuid:discriminator>/<string:performer>', methods=['GET'])
 def get_job(performer, discriminator):
+    """Return in process assignment for user
+            ---
+            tags:
+                - jobs
+            parameters:
+              - in: path
+                name: discriminator
+                type: string
+                format: uuid
+                required: true
+                description: Guid of task
+              - in: path
+                name: performer
+                type: integer
+                format: int
+                required: true
+                description: Users Id
+            responses:
+              200:
+                description: Return assignment for user
+            """
     results = jobs.get_job_with_filter(dbconn, performer, discriminator)
     return response.get_scalar_result(results)
 
 
-@app.route('/alljobs/<uuid:discriminator>/<string:performer>/<int:skip>', methods=['GET'])
+@app.route('/alljobs/<uuid:discriminator>/<int:performer>/<int:skip>', methods=['GET'])
 def get_all_job_inprocess(performer, discriminator, skip):
+    """Return list of in process assignments
+            ---
+            tags:
+                - alljobs
+            parameters:
+              - in: path
+                name: discriminator
+                type: string
+                format: uuid
+                required: true
+                description: Guid of task
+              - in: path
+                name: performer
+                type: integer
+                format: int
+                required: true
+                description: Users Id
+              - in: path
+                name: skip
+                type: integer
+                format: int
+                required: true
+                description: Number of offset rows
+            responses:
+              200:
+                description: Return list of assignments
+            """
     results = jobs.get_all_jobs(dbconn, performer, discriminator, skip)
-    return response.get_multi_result(results)
+    return jsonify(results)
 
 
-@app.route('/allnotices/<uuid:discriminator>/<string:performer>/<int:skip>', methods=['GET'])
+@app.route('/allnotices/<uuid:discriminator>/<int:performer>/<int:skip>', methods=['GET'])
 def get_all_unreadnotices(performer, discriminator, skip):
+    """Return list of unread notices in inbox
+            ---
+            tags:
+                - allnotices
+            parameters:
+              - in: path
+                name: discriminator
+                type: string
+                format: uuid
+                required: true
+                description: Guid of notice
+              - in: path
+                name: performer
+                type: integer
+                format: int
+                required: true
+                description: Users Id
+              - in: path
+                name: skip
+                type: integer
+                format: int
+                required: true
+                description: Number of offset rows
+            responses:
+              200:
+                description: Return list of notices
+            """
     results = jobs.get_all_notices(dbconn, performer, discriminator, skip)
-    return response.get_multi_result(results)
+    return jsonify(results)
 
 
-@app.route('/notice/<uuid:discriminator>/<string:performer>/<string:filter>', methods=['GET'])
+@app.route('/notice/<uuid:discriminator>/<int:performer>/<string:filter>', methods=['GET'])
 def get_unreadnotice(performer, discriminator, filter):
+    """Return unread notice for user
+            ---
+            tags:
+                - notice
+            parameters:
+              - in: path
+                name: discriminator
+                type: string
+                format: uuid
+                required: true
+                description: Guid of notice
+              - in: path
+                name: performer
+                type: integer
+                format: int
+                required: true
+                description: Users Id
+              - in: path
+                name: filter
+                type: string
+                required: false
+                description: Notices subject
+            responses:
+              200:
+                description: Return unread notice for user with filter
+            """
     results = jobs.get_notice_with_filter(dbconn, performer, discriminator, filter)
+    return response.get_scalar_result(results)
+
+
+@app.route('/notice/<uuid:discriminator>/<int:performer>', methods=['GET'])
+def ex_get_unreadnotice(performer, discriminator):
+    """Return unread notice for user
+            ---
+            tags:
+                - notice
+            parameters:
+              - in: path
+                name: discriminator
+                type: string
+                format: uuid
+                required: true
+                description: Guid of notice
+              - in: path
+                name: performer
+                type: integer
+                format: int
+                required: true
+                description: Users Id
+            responses:
+              200:
+                description: Return unread notice for user
+            """
+    results = jobs.get_notice_with_filter(dbconn, performer, discriminator)
     return response.get_scalar_result(results)
 
 
 @app.route('/jobs/<uuid:discriminator>/<int:performer>/<string:filter>', methods=['GET'])
 def ex_get_job(performer, discriminator, filter):
+    """Return in process assignment for user
+            ---
+            tags:
+                - jobs
+            parameters:
+              - in: path
+                name: discriminator
+                type: string
+                format: uuid
+                required: true
+                description: Guid of assignment
+              - in: path
+                name: performer
+                type: integer
+                format: int
+                required: true
+                description: Users Id
+              - in: path
+                name: filter
+                type: string
+                required: false
+                description: Assignments subject
+            responses:
+              200:
+                description: Return in process assignment for user with filter
+            """
     results = jobs.get_job_with_filter(dbconn, performer, discriminator, filter)
     return response.get_scalar_result(results)
 
 
-@app.route('/task/<uuid:discriminator>/<string:author>', methods=['GET'])
+@app.route('/task/<uuid:discriminator>/<int:author>', methods=['GET'])
 def get_task(author, discriminator):
+    """Return in process task for user
+            ---
+            tags:
+                - task
+            parameters:
+              - in: path
+                name: discriminator
+                type: string
+                format: uuid
+                required: true
+                description: Guid of task
+              - in: path
+                name: author
+                type: integer
+                format: int
+                required: true
+                description: Users Id
+            responses:
+              200:
+                description: Return in process task for user
+            """
     results = jobs.get_task_with_filter(dbconn, author, discriminator)
     return response.get_scalar_result(results)
 
 
 @app.route('/task/<uuid:discriminator>/<int:author>/<string:filter>', methods=['GET'])
 def ex_get_task(author, discriminator, filter):
+    """Return in process task for user
+            ---
+            tags:
+                - task
+            parameters:
+              - in: path
+                name: discriminator
+                type: string
+                format: uuid
+                required: true
+                description: Guid of task
+              - in: path
+                name: author
+                type: integer
+                format: int
+                required: true
+                description: Users Id
+              - in: path
+                name: filter
+                type: string
+                required: false
+                description: Tasks subject
+            responses:
+              200:
+                description: Return in process task for user with filter
+            """
     results = jobs.get_task_with_filter(dbconn, author, discriminator, filter)
     return response.get_scalar_result(results)
 
 
 @app.route('/docs/<uuid:discriminator>/<int:author>', methods=['GET'])
 def get_doc(author, discriminator):
+    """Return document for author
+            ---
+            tags:
+                - docs
+            parameters:
+              - in: path
+                name: discriminator
+                type: string
+                format: uuid
+                required: true
+                description: Guid of document
+              - in: path
+                name: author
+                type: integer
+                format: int
+                required: true
+                description: Users Id
+            responses:
+              200:
+                description: Return document for author
+            """
     results = docs.get_doc_with_filter(dbconn, author, discriminator)
     return response.get_scalar_result(results)
 
 
 @app.route('/docs/<int:author>', methods=['GET'])
 def get_any_doc(author):
+    """Return any document for author
+            ---
+            tags:
+                - docs
+            parameters:
+              - in: path
+                name: author
+                type: integer
+                format: int
+                required: true
+                description: Users Id
+            responses:
+              200:
+                description: Return any document for author
+            """
     results = docs.get_any_doc(dbconn, author)
     return response.get_scalar_result(results)
 
