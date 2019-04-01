@@ -25,14 +25,16 @@ def get_job_with_filter(dbconn, performer, discriminator, filter=""):
         return result
 
 
-def get_all_jobs(dbconn, performer, discriminator, skip):
+def get_all_jobs(dbconn, performer, discriminator, skip, create_date = None):
     query = "SELECT "
 
     query = query + "a.id FROM sungero_wf_assignment a " \
             + "WHERE a.performer = {0} ".format(performer) \
             + "AND a.status = 'InProcess' " \
-            + "AND a.discriminator = '{0}' ".format(discriminator) \
-            + "ORDER BY created desc "
+            + "AND a.discriminator = '{0}' ".format(discriminator)
+    if create_date != None:
+        query = query + "AND a.created > '{0}' ".format(create_date)
+    query = query + "ORDER BY created desc "
     if dbconn.engine == 'psql':
         query = query + "OFFSET {0}".format(skip)
     if dbconn.engine == 'mssql':

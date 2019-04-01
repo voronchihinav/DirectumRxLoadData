@@ -12,6 +12,8 @@ import docs
 import users
 import db
 
+create_date = None
+
 template = {
   "swagger": "2.0",
   "info": {
@@ -211,7 +213,7 @@ def get_all_job_inprocess(performer, discriminator, skip):
               200:
                 description: Return list of assignments
             """
-    results = jobs.get_all_jobs(dbconn, performer, discriminator, skip)
+    results = jobs.get_all_jobs(dbconn, performer, discriminator, skip, create_date)
     return jsonify(results)
 
 
@@ -446,6 +448,7 @@ def get_any_doc(author):
     return response.get_scalar_result(results)
 
 
+
 if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument("-e", "--engine", dest="engine", help="set sql engine")
@@ -454,9 +457,11 @@ if __name__ == '__main__':
     parser.add_argument("-n", "--user", dest="username", help="set user name for connect to db")
     parser.add_argument("-p", "--pwd", dest="password", help="set user name password")
     parser.add_argument("-pr", "--port", dest="port", help="port", default=None)
+    parser.add_argument("-cd", "--cdate", dest="createdate", help="date create tasts", default=None)
     args = parser.parse_args()
     print(args)
     dbconn = db.dbconnection(args.engine, args.host, args.dbname, args.username, args.password, args.port)
+    create_date = args.createdate
     app.debug = True  # enables auto reload during development
     app.run(host='0.0.0.0', port=5555)
     app.run()
