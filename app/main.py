@@ -64,7 +64,7 @@ def get_users_with_notices(noticetype, count):
                 description: Return list of users
             """
     result = users.get_logins_with_unread_notices(dbconn, noticetype, count)
-    return jsonify(result)
+    return response.get_multi_result(result)
 
 
 @app.route('/users/<string:prefix>', methods=['GET'])
@@ -85,7 +85,7 @@ def get_users(prefix='lu'):
             description: Return list of users with prefix
         """
     result = users.get_employees(dbconn, prefix)
-    return jsonify(result)
+    return response.get_multi_result(result)
 
 
 @app.route('/persons', methods=['GET'])
@@ -99,7 +99,7 @@ def get_persons():
                 description: Return list of persons
             """
     result = users.get_persons(dbconn)
-    return jsonify(result)
+    return response.get_multi_result(result)
 
 
 @app.route('/users/<uuid:jobtype>/<int:count>', methods=['GET'])
@@ -126,7 +126,7 @@ def get_users_with_inprocess_jobs(jobtype, count):
                 description: Return list of assignments
             """
     result = users.get_logins_with_jobs_inprocess(dbconn, jobtype, count)
-    return jsonify(result)
+    return response.get_multi_result(result)
 
 
 @app.route('/users/<string:prefix>/<int:count_all_users>', methods=['GET'])
