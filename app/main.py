@@ -209,6 +209,12 @@ def get_all_job_inprocess(performer, discriminator, skip):
                 format: int
                 required: true
                 description: Number of offset rows
+              - in: path
+                name: create_date
+                type: date
+                format: date
+                required: false
+                description: Jobs minimal created date
             responses:
               200:
                 description: Return list of assignments
