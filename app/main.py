@@ -4,7 +4,7 @@
 import flask
 from flasgger import Swagger
 import os
-from flask import send_from_directory, jsonify
+from flask import send_from_directory
 from argparse import ArgumentParser
 import response
 import jobs
@@ -220,7 +220,7 @@ def get_all_job_inprocess(performer, discriminator, skip):
                 description: Return list of assignments
             """
     results = jobs.get_all_jobs(dbconn, performer, discriminator, skip, create_date)
-    return jsonify(results)
+    return response.get_multi_result(results)
 
 
 @app.route('/allnotices/<uuid:discriminator>/<int:performer>/<int:skip>', methods=['GET'])
@@ -253,7 +253,7 @@ def get_all_unreadnotices(performer, discriminator, skip):
                 description: Return list of notices
             """
     results = jobs.get_all_notices(dbconn, performer, discriminator, skip)
-    return jsonify(results)
+    return response.get_multi_result(results)
 
 
 @app.route('/notice/<uuid:discriminator>/<int:performer>/<string:filter>', methods=['GET'])
