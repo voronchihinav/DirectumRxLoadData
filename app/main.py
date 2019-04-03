@@ -127,7 +127,7 @@ def get_users_with_inprocess_jobs(jobtype, count):
               200:
                 description: Return list of assignments
             """
-    result = users.get_logins_with_jobs_inprocess(dbconn, jobtype, count)
+    result = users.get_logins_with_jobs_inprocess(dbconn, jobtype, count, create_date)
     return response.get_multi_result(result)
 
 
