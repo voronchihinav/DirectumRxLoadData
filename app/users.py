@@ -101,3 +101,46 @@ def get_users_logins(dbconn, prefix, count_all_users):
         result = cur.fetchall()
 
         return result
+
+
+def get_performer(dbconn):
+    query = "SELECT id " \
+            + "FROM sungero_core_recipient " \
+            + "WHERE discriminator = 'B7905516-2BE5-4931-961C-CB38D5677565' " \
+            + "AND status = 'Active' "
+
+    with dbconn.connection() as connection:
+        cur = connection.cursor()
+        cur.execute(query)
+        result = cur.fetchall()
+
+        return result
+
+
+def get_department(dbconn):
+    query = "SELECT id " \
+            + "FROM sungero_core_recipient " \
+            + "WHERE discriminator = '61B1C19F-26E2-49A5-B3D3-0D3618151E12' " \
+            + "AND status = 'Active' "
+
+    with dbconn.connection() as connection:
+        cur = connection.cursor()
+        cur.execute(query)
+        result = cur.fetchall()
+
+        return result
+
+
+def get_manager(dbconn, userId):
+    query = "SELECT manager_company_sungero " \
+            + "FROM sungero_core_recipient " \
+            + "WHERE discriminator = '61B1C19F-26E2-49A5-B3D3-0D3618151E12' " \
+            + "AND status = 'Active' " \
+            + "AND id = (SELECT department_company_sungero from sungero_core_recipient WHERE id ='{0}') ".format(userId)
+
+    with dbconn.connection() as connection:
+        cur = connection.cursor()
+        cur.execute(query)
+        result = cur.fetchall()
+
+        return result

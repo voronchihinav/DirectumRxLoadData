@@ -454,6 +454,55 @@ def get_any_doc(author):
     return response.get_scalar_result(results)
 
 
+@app.route('/performer', methods=['GET'])
+def get_performer():
+    """Return any active performer id
+            ---
+            tags:
+                - performer
+            responses:
+              200:
+                description: Return any active performer id
+            """
+    results = users.get_performer(dbconn)
+    return response.get_scalar_result(results)
+
+
+@app.route('/department', methods=['GET'])
+def get_department():
+    """Return any active department id
+            ---
+            tags:
+                - department
+            responses:
+              200:
+                description: Return any active department id
+            """
+    results = users.get_department(dbconn)
+    return response.get_scalar_result(results)
+
+
+@app.route('/performer/manager/<int:userId>', methods=['GET'])
+def get_manager(userId):
+    """Return my active manager
+            ---
+            tags:
+                - performer
+            parameters:
+              - in: path
+                name: userId
+                type: integer
+                format: int
+                required: true
+                description: Users Id
+            responses:
+              200:
+                description: Return my active manager
+            """
+    results = users.get_manager(dbconn, userId)
+    return response.get_scalar_result(results)
+
+
 
 if __name__ == '__main__':
     parser = ArgumentParser()
