@@ -8,20 +8,19 @@ def get_employees(dbconn, prefix):
             "ON e.login = l.Id " \
             "WHERE l.loginname like '{0}%'".format(prefix)
 
-
     with dbconn.connection() as connection:
         cur = connection.cursor()
         cur.execute(query)
         result = cur.fetchall()
 
         return result
+
 
 def get_persons(dbconn):
     query = "SELECT Id, LastName, FirstName " \
             "FROM Sungero_Parties_Counterparty " \
             "WHERE discriminator ='f5509cdc-ac0c-4507-a4d3-61d7a0a9b6f6'"
 
-
     with dbconn.connection() as connection:
         cur = connection.cursor()
         cur.execute(query)
@@ -30,7 +29,7 @@ def get_persons(dbconn):
         return result
 
 
-def get_logins_with_jobs_inprocess(dbconn, job_type, count_jobs, create_date = None):
+def get_logins_with_jobs_inprocess(dbconn, job_type, count_jobs, create_date=None):
     query = "SELECT l.loginname " \
             + "FROM sungero_wf_assignment a " \
             + "INNER JOIN sungero_core_recipient r " \
@@ -64,7 +63,7 @@ def get_logins_with_unread_notices(dbconn, job_type, count_notices):
     if dbconn.engine == 'psql':
         query = query + "AND a.IsRead = false "
     else:
-        query = query  + "AND a.IsRead = 0 "
+        query = query + "AND a.IsRead = 0 "
     query = query + "GROUP BY l.loginname " \
             + "HAVING count(*) > {0} ".format(count_notices) \
             + "ORDER BY count(*) desc"
@@ -137,6 +136,20 @@ def get_manager(dbconn, userId):
             + "WHERE discriminator = '61B1C19F-26E2-49A5-B3D3-0D3618151E12' " \
             + "AND status = 'Active' " \
             + "AND id = (SELECT department_company_sungero from sungero_core_recipient WHERE id ='{0}') ".format(userId)
+
+    with dbconn.connection() as connection:
+        cur = connection.cursor()
+        cur.execute(query)
+        result = cur.fetchall()
+
+        return result
+
+
+def get_counterparty(dbconn):
+    query = "SELECT id " \
+            + "FROM sungero_parties_counterparty " \
+            + "WHERE discriminator in ('80C4E311-E95F-449B-984D-1FD540B8F0AF', 'F5509CDC-AC0C-4507-A4D3-61D7A0A9B6F6') " \
+            + "AND status = 'Active' "
 
     with dbconn.connection() as connection:
         cur = connection.cursor()

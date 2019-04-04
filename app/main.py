@@ -180,7 +180,7 @@ def get_job(performer, discriminator):
               200:
                 description: Return assignment for user
             """
-    results = jobs.get_job_with_filter(dbconn, performer, discriminator)
+    results = jobs.get_job_with_filter(dbconn, performer, discriminator, None, create_date)
     return response.get_scalar_result(results)
 
 
@@ -209,12 +209,6 @@ def get_all_job_inprocess(performer, discriminator, skip):
                 format: int
                 required: true
                 description: Number of offset rows
-              - in: path
-                name: create_date
-                type: date
-                format: date
-                required: false
-                description: Jobs minimal created date
             responses:
               200:
                 description: Return list of assignments
@@ -343,7 +337,7 @@ def ex_get_job(performer, discriminator, filter):
               200:
                 description: Return in process assignment for user with filter
             """
-    results = jobs.get_job_with_filter(dbconn, performer, discriminator, filter)
+    results = jobs.get_job_with_filter(dbconn, performer, discriminator, filter, create_date)
     return response.get_scalar_result(results)
 
 
@@ -500,6 +494,20 @@ def get_manager(userId):
                 description: Return my active manager
             """
     results = users.get_manager(dbconn, userId)
+    return response.get_scalar_result(results)
+
+
+@app.route('/counterparty', methods=['GET'])
+def get_counterparty():
+    """Return active counterparty
+            ---
+            tags:
+                - counterparty
+            responses:
+              200:
+                description: Return active counterparty
+            """
+    results = users.get_counterparty(dbconn)
     return response.get_scalar_result(results)
 
 

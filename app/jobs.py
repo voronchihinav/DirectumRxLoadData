@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-def get_job_with_filter(dbconn, performer, discriminator, filter=""):
+def get_job_with_filter(dbconn, performer, discriminator, filter="", create_date = None):
     if filter is None:
         filter = ""
     query = "SELECT "
@@ -12,8 +12,10 @@ def get_job_with_filter(dbconn, performer, discriminator, filter=""):
             + "WHERE a.performer = {0} ".format(performer) \
             + "AND a.status = 'InProcess' " \
             + "AND a.discriminator = '{0}' ".format(discriminator) \
-            + "AND a.subject like '%{0}%' ".format(filter) \
-            + "ORDER BY created desc "
+            + "AND a.subject like '%{0}%' ".format(filter)
+    if create_date != None:
+        query = query + "AND a.created > '{0}' ".format(create_date)
+    query = query + "ORDER BY created desc "
     if dbconn.engine == 'psql':
         query = query \
                 + "LIMIT 10"
