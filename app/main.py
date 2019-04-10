@@ -11,6 +11,7 @@ import jobs
 import docs
 import users
 import db
+import departments
 
 create_date = None
 
@@ -66,6 +67,25 @@ def get_users_with_notices(noticetype, count):
                 description: Return list of users
             """
     result = users.get_logins_with_unread_notices(dbconn, noticetype, count)
+    return response.get_multi_result(result)
+
+@app.route('/departments/<int:count>', methods=['GET'])
+def get_departments_with_count_memebers(count):
+    """Return list of users with prefix
+        ---
+        tags:
+            - departments
+        parameters:
+          - in: path
+            name: count
+            type: integer
+            required: true
+            description: Count department members
+        responses:
+          200:
+            description: Return list of departments
+        """
+    result = departments.get_departments_with_count_memebers(dbconn, count)
     return response.get_multi_result(result)
 
 
