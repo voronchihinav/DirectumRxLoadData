@@ -124,6 +124,20 @@ def get_persons():
     return response.get_multi_result(result)
 
 
+@app.route('/person', methods=['GET'])
+def get_person():
+    """Return person id
+            ---
+            tags:
+                - person
+            responses:
+              200:
+                description: Return person id
+            """
+    result = users.get_person(dbconn)
+    return response.get_scalar_result(result)
+
+
 @app.route('/users/<uuid:jobtype>/<int:count>', methods=['GET'])
 def get_users_with_inprocess_jobs(jobtype, count):
     """Return list of in process assignments
@@ -468,17 +482,17 @@ def get_any_doc(author):
     return response.get_scalar_result(results)
 
 
-@app.route('/performer', methods=['GET'])
-def get_performer():
-    """Return any active performer id
+@app.route('/employee', methods=['GET'])
+def get_employee():
+    """Return any active employee id
             ---
             tags:
-                - performer
+                - employee
             responses:
               200:
-                description: Return any active performer id
+                description: Return any active employee id
             """
-    results = users.get_performer(dbconn)
+    results = users.get_employee(dbconn)
     return response.get_scalar_result(results)
 
 
@@ -496,12 +510,12 @@ def get_department():
     return response.get_scalar_result(results)
 
 
-@app.route('/performer/manager/<int:userId>', methods=['GET'])
+@app.route('/employee/manager/<int:userId>', methods=['GET'])
 def get_manager(userId):
     """Return my active manager
             ---
             tags:
-                - performer
+                - employee
             parameters:
               - in: path
                 name: userId
@@ -528,6 +542,34 @@ def get_counterparty():
                 description: Return active counterparty
             """
     results = users.get_counterparty(dbconn)
+    return response.get_scalar_result(results)
+
+
+@app.route('/company', methods=['GET'])
+def get_company():
+    """Return active company
+            ---
+            tags:
+                - company
+            responses:
+              200:
+                description: Return active company
+            """
+    results = users.get_company(dbconn)
+    return response.get_scalar_result(results)
+
+
+@app.route('/contact', methods=['GET'])
+def get_contact():
+    """Return contact
+            ---
+            tags:
+                - contact
+            responses:
+              200:
+                description: Return contact
+            """
+    results = users.get_contact(dbconn)
     return response.get_scalar_result(results)
 
 

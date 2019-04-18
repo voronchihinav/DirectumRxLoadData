@@ -29,6 +29,19 @@ def get_persons(dbconn):
         return result
 
 
+def get_person(dbconn):
+    query = "SELECT Id " \
+            "FROM Sungero_Parties_Counterparty " \
+            "WHERE discriminator ='f5509cdc-ac0c-4507-a4d3-61d7a0a9b6f6'"
+
+    with dbconn.connection() as connection:
+        cur = connection.cursor()
+        cur.execute(query)
+        result = cur.fetchall()
+
+        return result
+
+
 def get_logins_with_jobs_inprocess(dbconn, job_type, count_jobs, create_date=None):
     query = "SELECT l.loginname " \
             + "FROM sungero_wf_assignment a " \
@@ -102,7 +115,7 @@ def get_users_logins(dbconn, prefix, count_all_users):
         return result
 
 
-def get_performer(dbconn):
+def get_employee(dbconn):
     query = "SELECT id " \
             + "FROM sungero_core_recipient " \
             + "WHERE discriminator = 'B7905516-2BE5-4931-961C-CB38D5677565' " \
@@ -148,8 +161,35 @@ def get_manager(dbconn, userId):
 def get_counterparty(dbconn):
     query = "SELECT id " \
             + "FROM sungero_parties_counterparty " \
-            + "WHERE discriminator in ('80C4E311-E95F-449B-984D-1FD540B8F0AF', 'F5509CDC-AC0C-4507-A4D3-61D7A0A9B6F6') " \
+            + "WHERE discriminator in ('80C4E311-E95F-449B-984D-1FD540B8F0AF', 'F5509CDC-AC0C-4507-A4D3-61D7A0A9B6F6', '593e143c-616c-4d95-9457-fd916c4aa7f8') " \
             + "AND status = 'Active' "
+
+    with dbconn.connection() as connection:
+        cur = connection.cursor()
+        cur.execute(query)
+        result = cur.fetchall()
+
+        return result
+
+
+def get_company(dbconn):
+    query = "SELECT id " \
+            + "FROM sungero_parties_counterparty " \
+            + "WHERE discriminator = '593e143c-616c-4d95-9457-fd916c4aa7f8' " \
+            + "AND status = 'Active' "
+
+    with dbconn.connection() as connection:
+        cur = connection.cursor()
+        cur.execute(query)
+        result = cur.fetchall()
+
+        return result
+
+
+def get_contact(dbconn):
+    query = "SELECT id " \
+            + "FROM sungero_parties_contact " \
+            + "WHERE discriminator = 'C8DAAEF9-A679-4A29-AC01-B93C1637C72E' "
 
     with dbconn.connection() as connection:
         cur = connection.cursor()
