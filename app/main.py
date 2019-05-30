@@ -138,8 +138,8 @@ def get_person():
     return response.get_scalar_result(result)
 
 
-@app.route('/users/<uuid:jobtype>/<int:count>', methods=['GET'])
-def get_users_with_inprocess_jobs(jobtype, count):
+@app.route('/users/<uuid:jobtype>/<int:count>/<string:filter>', methods=['GET'])
+def get_users_with_inprocess_jobs(jobtype, count, filter):
     """Return list of in process assignments
             ---
             tags:
@@ -150,18 +150,23 @@ def get_users_with_inprocess_jobs(jobtype, count):
                 type: string
                 format: uuid
                 required: true
-                description: Guid of task
+                description: Guid of assignment
               - in: path
                 name: count
                 type: integer
                 format: int
                 required: true
                 description: Count tasks
+              - in: path
+                name: filter
+                type: string
+                required: false
+                description: Assignments subject
             responses:
               200:
                 description: Return list of assignments
             """
-    result = users.get_logins_with_jobs_inprocess(dbconn, jobtype, count, create_date)
+    result = users.get_logins_with_jobs_inprocess(dbconn, jobtype, count, filter, create_date)
     return response.get_multi_result(result)
 
 
@@ -218,8 +223,8 @@ def get_job(performer, discriminator):
     return response.get_scalar_result(results)
 
 
-@app.route('/alljobs/<uuid:discriminator>/<int:performer>/<int:skip>', methods=['GET'])
-def get_all_job_inprocess(performer, discriminator, skip):
+@app.route('/alljobs/<uuid:discriminator>/<int:performer>/<int:skip>/<string:filter>', methods=['GET'])
+def get_all_job_inprocess(performer, discriminator, skip, filter):
     """Return list of in process assignments
             ---
             tags:
@@ -243,11 +248,16 @@ def get_all_job_inprocess(performer, discriminator, skip):
                 format: int
                 required: true
                 description: Number of offset rows
+              - in: path
+                name: filter
+                type: string
+                required: false
+                description: Assignments subject
             responses:
               200:
                 description: Return list of assignments
             """
-    results = jobs.get_all_jobs(dbconn, performer, discriminator, skip, create_date)
+    results = jobs.get_all_jobs(dbconn, performer, discriminator, skip, filter, create_date)
     return response.get_multi_result(results)
 
 

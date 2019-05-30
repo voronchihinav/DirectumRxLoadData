@@ -6,7 +6,7 @@ def get_employees(dbconn, prefix):
             "FROM sungero_core_recipient e " \
             "INNER JOIN sungero_core_login l " \
             "ON e.login = l.Id " \
-            "WHERE l.loginname like '{0}%'".format(prefix)
+            "WHERE l.loginname like '{0}%'".format(prefix) + "AND e.id >= 2394"
 
     with dbconn.connection() as connection:
         cur = connection.cursor()
@@ -42,14 +42,15 @@ def get_person(dbconn):
         return result
 
 
-def get_logins_with_jobs_inprocess(dbconn, job_type, count_jobs, create_date=None):
+def get_logins_with_jobs_inprocess(dbconn, job_type, count_jobs, filter, create_date=None):
     query = "SELECT l.loginname " \
             + "FROM sungero_wf_assignment a " \
             + "INNER JOIN sungero_core_recipient r " \
             + "ON r.id = a.performer " \
             + "INNER JOIN sungero_core_login l " \
             + "ON r.login = l.id " \
-            + " WHERE a.Status = 'InProcess' AND r.Status = 'Active' AND a.discriminator ='{0}' ".format(job_type)
+            + " WHERE a.Status = 'InProcess' AND r.Status = 'Active' AND a.discriminator ='{0}' ".format(job_type) \
+            + "AND a.subject like '%{0}%' ".format(filter)
     if create_date != None:
         query = query + "AND a.created > '{0}' ".format(create_date)
 
