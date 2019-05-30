@@ -50,12 +50,13 @@ def get_all_jobs(dbconn, performer, discriminator, skip, filter="", create_date 
         return result
 
 
-def get_all_notices(dbconn, performer, discriminator, skip):
+def get_all_notices(dbconn, performer, discriminator, skip, filter=""):
     query = "SELECT "
 
     query = query + "a.id FROM sungero_wf_assignment a " \
             + "WHERE a.performer = {0} ".format(performer) \
-            + "AND a.discriminator = '{0}' ".format(discriminator)
+            + "AND a.discriminator = '{0}' ".format(discriminator) \
+            + "AND a.subject like '%{0}%' ".format(filter)
     if dbconn.engine == 'psql':
         query = query + "AND a.IsRead = false "
     else:

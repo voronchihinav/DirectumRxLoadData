@@ -43,8 +43,8 @@ def favicon():
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
-@app.route('/users/notice/<uuid:noticetype>/<int:count>', methods=['GET'])
-def get_users_with_notices(noticetype, count):
+@app.route('/users/notice/<uuid:noticetype>/<int:count>/<string:filter>', methods=['GET'])
+def get_users_with_notices(noticetype, count, filter):
     """Return list of users with unread notices in inbox
             ---
             tags:
@@ -62,11 +62,16 @@ def get_users_with_notices(noticetype, count):
                 format: int
                 required: true
                 description: Count notices
+              - in: path
+                name: filter
+                type: string
+                required: false
+                description: Notices subject
             responses:
               200:
                 description: Return list of users
             """
-    result = users.get_logins_with_unread_notices(dbconn, noticetype, count)
+    result = users.get_logins_with_unread_notices(dbconn, noticetype, count, filter)
     return response.get_multi_result(result)
 
 @app.route('/departments/<int:count>', methods=['GET'])
@@ -261,8 +266,8 @@ def get_all_job_inprocess(performer, discriminator, skip, filter):
     return response.get_multi_result(results)
 
 
-@app.route('/allnotices/<uuid:discriminator>/<int:performer>/<int:skip>', methods=['GET'])
-def get_all_unreadnotices(performer, discriminator, skip):
+@app.route('/allnotices/<uuid:discriminator>/<int:performer>/<int:skip>/<string:filter>', methods=['GET'])
+def get_all_unreadnotices(performer, discriminator, skip, filter):
     """Return list of unread notices in inbox
             ---
             tags:
@@ -286,11 +291,16 @@ def get_all_unreadnotices(performer, discriminator, skip):
                 format: int
                 required: true
                 description: Number of offset rows
+              - in: path
+                name: filter
+                type: string
+                required: false
+                description: Notices subject
             responses:
               200:
                 description: Return list of notices
             """
-    results = jobs.get_all_notices(dbconn, performer, discriminator, skip)
+    results = jobs.get_all_notices(dbconn, performer, discriminator, skip, filter)
     return response.get_multi_result(results)
 
 

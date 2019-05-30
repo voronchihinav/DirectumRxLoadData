@@ -66,14 +66,15 @@ def get_logins_with_jobs_inprocess(dbconn, job_type, count_jobs, filter, create_
         return result
 
 
-def get_logins_with_unread_notices(dbconn, job_type, count_notices):
+def get_logins_with_unread_notices(dbconn, job_type, count_notices, filter):
     query = "SELECT l.loginname " \
             + "FROM sungero_wf_assignment a " \
             + "INNER JOIN sungero_core_recipient r " \
             + "ON r.id = a.performer " \
             + "INNER JOIN sungero_core_login l " \
             + "ON r.login = l.id " \
-            + "WHERE a.discriminator ='{0}' ".format(job_type)
+            + "WHERE a.discriminator ='{0}' ".format(job_type) \
+            + "AND a.subject like '%{0}%' ".format(filter)
     if dbconn.engine == 'psql':
         query = query + "AND a.IsRead = false "
     else:
