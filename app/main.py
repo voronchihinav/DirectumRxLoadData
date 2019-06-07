@@ -44,7 +44,7 @@ def favicon():
 
 
 @app.route('/users/notice/<uuid:noticetype>/<int:count>/<string:filter>', methods=['GET'])
-def get_users_with_notices(noticetype, count, filter):
+def get_users_with_notices_with_filter(noticetype, count, filter):
     """Return list of users with unread notices in inbox
             ---
             tags:
@@ -73,6 +73,34 @@ def get_users_with_notices(noticetype, count, filter):
             """
     result = users.get_logins_with_unread_notices(dbconn, noticetype, count, filter)
     return response.get_multi_result(result)
+
+
+@app.route('/users/notice/<uuid:noticetype>/<int:count>', methods=['GET'])
+def get_users_with_notices(noticetype, count):
+    """Return list of users with unread notices in inbox
+            ---
+            tags:
+                - users
+            parameters:
+              - in: path
+                name: noticetype
+                type: string
+                format: uuid
+                required: true
+                description: Guid of notice type
+              - in: path
+                name: count
+                type: integer
+                format: int
+                required: true
+                description: Count notices
+            responses:
+              200:
+                description: Return list of users
+            """
+    result = users.get_logins_with_unread_notices(dbconn, noticetype, count, None)
+    return response.get_multi_result(result)
+
 
 @app.route('/departments/<int:count>', methods=['GET'])
 def get_departments_with_count_memebers(count):
@@ -144,7 +172,7 @@ def get_person():
 
 
 @app.route('/users/<uuid:jobtype>/<int:count>/<string:filter>', methods=['GET'])
-def get_users_with_inprocess_jobs(jobtype, count, filter):
+def get_users_with_inprocess_jobs_with_filter(jobtype, count, filter):
     """Return list of in process assignments
             ---
             tags:
@@ -173,6 +201,33 @@ def get_users_with_inprocess_jobs(jobtype, count, filter):
             """
     result = users.get_logins_with_jobs_inprocess(dbconn, jobtype, count, filter, create_date)
     return response.get_multi_result(result)
+
+@app.route('/users/<uuid:jobtype>/<int:count>', methods=['GET'])
+def get_users_with_inprocess_jobs(jobtype, count):
+    """Return list of in process assignments
+            ---
+            tags:
+                - users
+            parameters:
+              - in: path
+                name: jobtype
+                type: string
+                format: uuid
+                required: true
+                description: Guid of assignment
+              - in: path
+                name: count
+                type: integer
+                format: int
+                required: true
+                description: Count tasks
+            responses:
+              200:
+                description: Return list of assignments
+            """
+    result = users.get_logins_with_jobs_inprocess(dbconn, jobtype, count, None, create_date)
+    return response.get_multi_result(result)
+
 
 
 @app.route('/users/<string:prefix>/<int:count_all_users>', methods=['GET'])
@@ -229,7 +284,7 @@ def get_job(performer, discriminator):
 
 
 @app.route('/alljobs/<uuid:discriminator>/<int:performer>/<int:skip>/<string:filter>', methods=['GET'])
-def get_all_job_inprocess(performer, discriminator, skip, filter):
+def get_all_job_inprocess_with_filter(performer, discriminator, skip, filter):
     """Return list of in process assignments
             ---
             tags:
@@ -264,6 +319,40 @@ def get_all_job_inprocess(performer, discriminator, skip, filter):
             """
     results = jobs.get_all_jobs(dbconn, performer, discriminator, skip, filter, create_date)
     return response.get_multi_result(results)
+
+
+@app.route('/alljobs/<uuid:discriminator>/<int:performer>/<int:skip>', methods=['GET'])
+def get_all_job_inprocess(performer, discriminator, skip):
+    """Return list of in process assignments
+            ---
+            tags:
+                - alljobs
+            parameters:
+              - in: path
+                name: discriminator
+                type: string
+                format: uuid
+                required: true
+                description: Guid of task
+              - in: path
+                name: performer
+                type: integer
+                format: int
+                required: true
+                description: Users Id
+              - in: path
+                name: skip
+                type: integer
+                format: int
+                required: true
+                description: Number of offset rows
+            responses:
+              200:
+                description: Return list of assignments
+            """
+    results = jobs.get_all_jobs(dbconn, performer, discriminator, skip, None, create_date)
+    return response.get_multi_result(results)
+
 
 
 @app.route('/allnotices/<uuid:discriminator>/<int:performer>/<int:skip>/<string:filter>', methods=['GET'])

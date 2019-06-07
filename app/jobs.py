@@ -28,6 +28,8 @@ def get_job_with_filter(dbconn, performer, discriminator, filter="", create_date
 
 
 def get_all_jobs(dbconn, performer, discriminator, skip, filter="", create_date = None):
+    if filter is None:
+        filter = ""
     query = "SELECT "
 
     query = query + "a.id FROM sungero_wf_assignment a " \

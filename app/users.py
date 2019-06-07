@@ -42,7 +42,9 @@ def get_person(dbconn):
         return result
 
 
-def get_logins_with_jobs_inprocess(dbconn, job_type, count_jobs, filter, create_date=None):
+def get_logins_with_jobs_inprocess(dbconn, job_type, count_jobs, filter="", create_date=None):
+    if filter is None:
+        filter = ""
     query = "SELECT l.loginname " \
             + "FROM sungero_wf_assignment a " \
             + "INNER JOIN sungero_core_recipient r " \
@@ -67,6 +69,8 @@ def get_logins_with_jobs_inprocess(dbconn, job_type, count_jobs, filter, create_
 
 
 def get_logins_with_unread_notices(dbconn, job_type, count_notices, filter):
+    if filter is None:
+        filter = ""
     query = "SELECT l.loginname " \
             + "FROM sungero_wf_assignment a " \
             + "INNER JOIN sungero_core_recipient r " \
