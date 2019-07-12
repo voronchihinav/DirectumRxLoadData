@@ -18,10 +18,10 @@ def get_departments_with_count_memebers(dbconn, count_members):
 
 def get_head_departments(dbconn):
     query = "SELECT id " \
-            "FROM sungero_core_recipient r " \
-            "WHERE r.discriminator = '61b1c19f-26e2-49a5-b3d3-0d3618151e12' " \
+            "FROM sungero_core_recipient " \
+            "WHERE discriminator = '61b1c19f-26e2-49a5-b3d3-0d3618151e12' " \
 	    "AND status = 'Active' " \
-            "AND HeadOffice_Company_Sungero is not null "
+            "AND HeadOffice_Company_Sungero IS NULL "
 
 
     with dbconn.connection() as connection:
