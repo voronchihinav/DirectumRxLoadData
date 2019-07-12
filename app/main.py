@@ -702,6 +702,19 @@ def get_contact():
     return response.get_scalar_result(results)
 
 
+@app.route('/headdepartment', methods=['GET'])
+def get_head_department():
+    """Return department
+            ---
+            tags:
+                - department
+            responses:
+              200:
+                description: Return head department
+            """
+    results = departments.get_head_departments(dbconn)
+    return response.get_scalar_result(results)
+
 
 if __name__ == '__main__':
     parser = ArgumentParser()

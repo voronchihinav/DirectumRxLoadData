@@ -14,3 +14,19 @@ def get_departments_with_count_memebers(dbconn, count_members):
         result = cur.fetchall()
 
         return result
+
+
+def get_head_departments(dbconn):
+    query = "SELECT id " \
+            "FROM sungero_core_recipient r " \
+            "WHERE r.discriminator = '61b1c19f-26e2-49a5-b3d3-0d3618151e12' " \
+	    "AND status = 'Active' " \
+            "AND HeadOffice_Company_Sungero is not null "
+
+
+    with dbconn.connection() as connection:
+        cur = connection.cursor()
+        cur.execute(query)
+        result = cur.fetchall()
+
+        return result
