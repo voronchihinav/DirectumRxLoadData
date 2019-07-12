@@ -605,6 +605,26 @@ def get_employee():
     return response.get_scalar_result(results)
 
 
+@app.route('/employees/<int:count>', methods=['GET'])
+def get_employees_count(count):
+    """Return any active employee id
+            ---
+            tags:
+                - employee
+            parameters:
+              - in: path
+                name: count
+                type: integer
+                format: int
+                required: true
+                description: Users count
+            responses:
+              200:
+                description: Return counts of active employees id
+            """
+    results = users.get_employees_count(dbconn, count)
+    return response.get_multi_result(results)
+
 @app.route('/department', methods=['GET'])
 def get_department():
     """Return any active department id
