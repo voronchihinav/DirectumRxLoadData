@@ -142,9 +142,13 @@ def get_employees_count(dbconn, count):
             + "FROM sungero_core_recipient " \
             + "WHERE discriminator = 'B7905516-2BE5-4931-961C-CB38D5677565' " \
             + "AND status = 'Active' "
+    if dbconn.engine == 'mssql':
+        query = query \
+            + "ORDER BY NEWID() "
     if dbconn.engine == 'psql':
         query = query \
-                + "LIMIT '{0}' ".format(count)
+		    + "ORDER BY RANDOM() " \
+            + "LIMIT '{0}' ".format(count)
 
     with dbconn.connection() as connection:
         cur = connection.cursor()
