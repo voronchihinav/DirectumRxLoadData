@@ -12,6 +12,7 @@ import docs
 import users
 import db
 import departments
+import substitution
 
 create_date = None
 
@@ -714,6 +715,20 @@ def get_head_department():
             """
     results = departments.get_head_departments(dbconn)
     return response.get_scalar_result(results)
+
+
+@app.route('/substitutions', methods=['GET'])
+def get_substitutions():
+    """Return list of substitutions
+            ---
+            tags:
+                - substitutions
+            responses:
+              200:
+                description: Return list of substitutions
+            """
+    result = substitution.get_substitutions(dbconn)
+    return response.get_multi_result(result)
 
 
 if __name__ == '__main__':
