@@ -41,3 +41,20 @@ def get_any_doc(dbconn, author):
         cur.execute(query)
         result = cur.fetchall()
         return result
+
+
+def get_bodyId(dbconn, author, extension):
+    query = "SELECT CAST(edv.Body_Id as NVARCHAR(50)) " \
+            + "FROM sungero_content_EdocVersion edv " \
+            + "INNER JOIN Sungero_Content_AssociatedApp aa " \
+            + "ON edv.AssociatedApplication = aa.Id " \
+            + "WHERE edv.author = '{0}' ".format(author) \
+            + "AND aa.extension = '{0}' ".format(extension)
+
+    with dbconn.connection() as connection:
+        cur = connection.cursor()
+        cur.execute(query)
+        result = cur.fetchall()
+
+        return result
+

@@ -227,3 +227,24 @@ def get_contact(dbconn):
         result = cur.fetchall()
 
         return result
+
+
+def get_employees_with_bodies(dbconn, from_usertid, to_userid, extension):
+    query = "SELECT e.Id " \
+            + "FROM sungero_core_recipient e " \
+            + "INNER JOIN Sungero_Content_EdocVersion edv " \
+            + "ON e.id = edv.Author " \
+            + "INNER JOIN Sungero_Content_AssociatedApp aa " \
+            + "ON edv.AssociatedApplication = aa.Id " \
+            + "WHERE e.id >= '{0}' ".format(from_usertid) \
+            + "AND e.id <= '{0}' ".format(to_userid) \
+            + "AND aa.extension = '{0}' ".format(extension) \
+            + "GROUP BY e.id " \
+            + "ORDER BY e.id "
+
+    with dbconn.connection() as connection:
+        cur = connection.cursor()
+        cur.execute(query)
+        result = cur.fetchall()
+
+        return result

@@ -731,6 +731,64 @@ def get_substitutions():
     return response.get_multi_result(result)
 
 
+@app.route('/users/body/<int:from_userid>/<int:to_userid>/<string:extension>', methods=['GET'])
+def get_employees_with_bodies(from_userid, to_userid, extension):
+    """Return any document for author
+            ---
+            tags:
+                - users
+            parameters:
+              - in: path
+                name: from_userid
+                type: integer
+                format: int
+                required: true
+                description: Users Id
+              - in: path
+                name: to_userid
+                type: integer
+                format: int
+                required: true
+                description: Users Id
+              - in: path
+                name: extension
+                type: string
+                required: true
+                description: Extension of documents
+            responses:
+              200:
+                description: Return users with document bodies from userid to userid
+            """
+    results = users.get_employees_with_bodies(dbconn, from_userid, to_userid, extension)
+    return response.get_multi_result(results)
+
+
+@app.route('/docs/bodyid/<int:author>/<string:extension>', methods=['GET'])
+def get_bodyId(author, extension):
+    """Return bodyid of document for author
+            ---
+            tags:
+                - docs
+            parameters:
+              - in: path
+                name: author
+                type: integer
+                format: int
+                required: true
+                description: Users Id
+              - in: path
+                name: extension
+                type: string
+                required: true
+                description: Extension of documents
+            responses:
+              200:
+                description: Return bodyids for author
+            """
+    results = docs.get_bodyId(dbconn, author, extension)
+    return response.get_multi_result(results)
+
+
 if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument("-e", "--engine", dest="engine", help="set sql engine")
