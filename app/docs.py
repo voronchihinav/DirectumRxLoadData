@@ -44,7 +44,7 @@ def get_any_doc(dbconn, author):
 
 
 def get_bodyId(dbconn, author, extension):
-    query = "SELECT CAST(edv.Body_Id as NVARCHAR(50)) " \
+    query = "SELECT CAST(edv.Body_Id as NVARCHAR(50)), edv.id " \
             + "FROM sungero_content_EdocVersion edv " \
             + "INNER JOIN Sungero_Content_AssociatedApp aa " \
             + "ON edv.AssociatedApplication = aa.Id " \
