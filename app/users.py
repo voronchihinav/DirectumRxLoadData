@@ -6,7 +6,7 @@ def get_employees(dbconn, prefix):
             "FROM sungero_core_recipient e " \
             "INNER JOIN sungero_core_login l " \
             "ON e.login = l.Id " \
-            "WHERE l.loginname like '{0}%'".format(prefix)
+            "WHERE l.loginname like '%{0}%'".format(prefix)
 
     with dbconn.connection() as connection:
         cur = connection.cursor()
