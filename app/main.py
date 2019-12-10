@@ -13,6 +13,7 @@ import users
 import db
 import departments
 import substitution
+import cbr
 
 create_date = None
 
@@ -121,6 +122,21 @@ def get_departments_with_count_memebers(count):
         """
     result = departments.get_departments_with_count_memebers(dbconn, count)
     return response.get_multi_result(result)
+
+
+@app.route('/departments', methods=['GET'])
+def get_departments():
+    """Return list of users with prefix
+        ---
+        tags:
+            - departments
+        responses:
+          200:
+            description: Return list of departments
+        """
+    result = departments.get_departments(dbconn)
+    return response.get_multi_result(result)
+
 
 
 @app.route('/users/<string:prefix>', methods=['GET'])
@@ -787,6 +803,96 @@ def get_bodyId(author, extension):
             """
     results = docs.get_bodyId(dbconn, author, extension)
     return response.get_multi_result(results)
+
+
+@app.route('/cbr/storagearticles', methods=['GET'])
+def get_storagearticles():
+    """Return list of storagearticles
+            ---
+            tags:
+                - cbr
+            responses:
+              200:
+                description: Return list of storagearticles
+            """
+    result = cbr.get_storagearticles(dbconn)
+    return response.get_multi_result(result)
+
+
+@app.route('/cbr/nomenclatures/<string:filter>', methods=['GET'])
+def get_nomenclatures_with_filter(filter):
+    """Return nomenclature
+            ---
+            tags:
+                - cbr
+            parameters:
+              - in: path
+                name: filter
+                type: string
+                required: false
+                description: Nomenclaturess name
+            responses:
+              200:
+                description: Return nomenclature
+            """
+    results = cbr.get_nomenclatures(dbconn, filter)
+    return response.get_scalar_result(results)
+
+
+@app.route('/cbr/nomenclatures', methods=['GET'])
+def get_nomenclatures():
+    """Return nomenclature
+            ---
+            tags:
+                - cbr
+            parameters:
+            responses:
+              200:
+                description: Return nomenclature
+            """
+    results = cbr.get_nomenclatures(dbconn, None)
+    return response.get_multi_result(results)
+
+
+@app.route('/cbr/documentkind/<int:documenttypeId>', methods=['GET'])
+def get_documentkind(documenttypeId):
+    """Return documentkind
+            ---
+            tags:
+                - cbr
+            parameters:
+              - in: path
+                name: documenttype
+                type: integer
+                format: int
+                required: true
+                description: Documenttype Id
+            responses:
+              200:
+                description: Return documentkind ID
+            """
+    results = cbr.get_documentkind(dbconn, documenttypeId)
+    return response.get_scalar_result(results)
+
+
+@app.route('/role/<string:filter>', methods=['GET'])
+def get_role_with_filter(filter):
+    """Return role
+            ---
+            tags:
+                - role
+            parameters:
+              - in: path
+                name: name
+                type: string
+                required: false
+                description: Roles name
+            responses:
+              200:
+                description: Return Role
+            """
+    results = users.get_role(dbconn, filter)
+    return response.get_scalar_result(results)
 
 
 if __name__ == '__main__':

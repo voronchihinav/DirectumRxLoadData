@@ -248,3 +248,19 @@ def get_employees_with_bodies(dbconn, from_usertid, to_userid, extension):
         result = cur.fetchall()
 
         return result
+
+
+def get_role(dbconn, filter):
+    if filter is None:
+        filter = ""
+    query = "SELECT id " \
+            "FROM Sungero_Core_Recipient " \
+            "WHERE DISCRIMINATOR = '5E9B55C2-C1F5-4E4F-AA09-7B6D461D87ED' " \
+            "AND NAME LIKE '%{0}%' ".format(filter)
+
+    with dbconn.connection() as connection:
+        cur = connection.cursor()
+        cur.execute(query)
+        result = cur.fetchall()
+
+        return result
