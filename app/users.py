@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
+import json
+import utils
+
+
 def get_employees(dbconn, prefix):
     query = "SELECT e.Id, l.loginname " \
             "FROM sungero_core_recipient e " \
@@ -8,12 +13,22 @@ def get_employees(dbconn, prefix):
             "ON e.login = l.Id " \
             "WHERE l.loginname like '%{0}%'".format(prefix)
 
-    with dbconn.connection() as connection:
-        cur = connection.cursor()
-        cur.execute(query)
-        result = cur.fetchall()
+    directory = "users"
+    filepath = '{0}/{1}.txt'.format(directory, prefix)
 
-        return result
+    if os.path.exists(filepath):
+        result = utils.read_result_from_cache(filepath)
+    else:
+        utils.create_directiry(directory)
+
+        with dbconn.connection() as connection:
+            cur = connection.cursor()
+            cur.execute(query)
+            result = cur.fetchall()
+
+        utils.write_result_to_json(filepath, result)
+
+    return result
 
 
 def get_persons(dbconn):
