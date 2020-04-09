@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
+import utils
+
 
 def get_job_with_filter(dbconn, performer, discriminator, filter="", create_date = None):
     if filter is None:
@@ -20,11 +23,22 @@ def get_job_with_filter(dbconn, performer, discriminator, filter="", create_date
         query = query \
                 + "LIMIT 10"
 
-    with dbconn.connection() as connection:
-        cur = connection.cursor()
-        cur.execute(query)
-        result = cur.fetchall()
-        return result
+    directory = f"jobs/{performer}"
+    filepath = '{0}/{1}_{2}_{3}.txt'.format(directory, performer, discriminator, filter)
+
+    if os.path.exists(filepath):
+        result = utils.read_result_from_cache(filepath)
+    else:
+        utils.create_directiry(directory)
+
+        with dbconn.connection() as connection:
+            cur = connection.cursor()
+            cur.execute(query)
+            result = cur.fetchall()
+
+        utils.write_result_to_json(filepath, result)
+
+    return result
 
 
 def get_all_jobs(dbconn, performer, discriminator, skip, filter="", create_date = None):
@@ -90,11 +104,22 @@ def get_notice_with_filter(dbconn, performer, discriminator, filter=""):
         query = query + "AND a.IsRead = 0 "
     query = query + "ORDER BY a.created desc "
 
-    with dbconn.connection() as connection:
-        cur = connection.cursor()
-        cur.execute(query)
-        result = cur.fetchall()
-        return result
+    directory = f"notices/{performer}"
+    filepath = '{0}/{1}_{2}_{3}.txt'.format(directory, performer, discriminator, filter)
+
+    if os.path.exists(filepath):
+        result = utils.read_result_from_cache(filepath)
+    else:
+        utils.create_directiry(directory)
+
+        with dbconn.connection() as connection:
+            cur = connection.cursor()
+            cur.execute(query)
+            result = cur.fetchall()
+
+        utils.write_result_to_json(filepath, result)
+
+    return result
 
 
 def get_task_with_filter(dbconn, author, discriminator, filter=""):
@@ -113,8 +138,19 @@ def get_task_with_filter(dbconn, author, discriminator, filter=""):
         query = query \
                 + "LIMIT 10"
 
-    with dbconn.connection() as connection:
-        cur = connection.cursor()
-        cur.execute(query)
-        result = cur.fetchall()
-        return result
+    directory = f"tasks/{author}"
+    filepath = '{0}/{1}_{2}_{3}.txt'.format(directory, author, discriminator, filter)
+
+    if os.path.exists(filepath):
+        result = utils.read_result_from_cache(filepath)
+    else:
+        utils.create_directiry(directory)
+
+        with dbconn.connection() as connection:
+            cur = connection.cursor()
+            cur.execute(query)
+            result = cur.fetchall()
+
+        utils.write_result_to_json(filepath, result)
+
+    return result

@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
+import utils
+
+
 def get_doc_with_filter(dbconn, author, discriminator, filter=""):
     if filter is None:
         filter = ""
@@ -17,11 +21,22 @@ def get_doc_with_filter(dbconn, author, discriminator, filter=""):
         query = query \
                 + "LIMIT 10"
 
-    with dbconn.connection() as connection:
-        cur = connection.cursor()
-        cur.execute(query)
-        result = cur.fetchall()
-        return result
+    directory = f"docs/{author}"
+    filepath = '{0}/{1}_{2}_{3}.txt'.format(directory, author, discriminator, filter)
+
+    if os.path.exists(filepath):
+        result = utils.read_result_from_cache(filepath)
+    else:
+        utils.create_directiry(directory)
+
+        with dbconn.connection() as connection:
+            cur = connection.cursor()
+            cur.execute(query)
+            result = cur.fetchall()
+
+        utils.write_result_to_json(filepath, result)
+
+    return result
 
 def get_any_doc(dbconn, author):
     query = "SELECT "

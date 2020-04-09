@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import json
 import utils
 
 
@@ -195,12 +194,22 @@ def get_manager(dbconn, userId):
             + "AND status = 'Active' " \
             + "AND id = (SELECT department_company_sungero from sungero_core_recipient WHERE id ='{0}') ".format(userId)
 
-    with dbconn.connection() as connection:
-        cur = connection.cursor()
-        cur.execute(query)
-        result = cur.fetchall()
+    directory = "managers"
+    filepath = '{0}/{1}.txt'.format(directory, userId)
 
-        return result
+    if os.path.exists(filepath):
+        result = utils.read_result_from_cache(filepath)
+    else:
+        utils.create_directiry(directory)
+
+        with dbconn.connection() as connection:
+            cur = connection.cursor()
+            cur.execute(query)
+            result = cur.fetchall()
+
+        utils.write_result_to_json(filepath, result)
+
+    return result
 
 
 def get_counterparty(dbconn):

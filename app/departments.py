@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
+import utils
+
+
 def get_departments_with_count_memebers(dbconn, count_members):
     query = "SELECT r.id " \
             "FROM sungero_core_recipient r " \
@@ -38,10 +42,19 @@ def get_head_departments(dbconn):
 	    "AND status = 'Active' " \
             "AND HeadOffice_Company_Sungero IS NULL "
 
+    directory = f"headdepartment"
+    filepath = '{0}/{0}.txt'.format(directory)
 
-    with dbconn.connection() as connection:
-        cur = connection.cursor()
-        cur.execute(query)
-        result = cur.fetchall()
+    if os.path.exists(filepath):
+        result = utils.read_result_from_cache(filepath)
+    else:
+        utils.create_directiry(directory)
 
-        return result
+        with dbconn.connection() as connection:
+            cur = connection.cursor()
+            cur.execute(query)
+            result = cur.fetchall()
+
+        utils.write_result_to_json(filepath, result)
+
+    return result
