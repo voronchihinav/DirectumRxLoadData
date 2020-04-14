@@ -45,16 +45,17 @@ def get_head_departments(dbconn):
     directory = f"headdepartment"
     filepath = '{0}/{0}.txt'.format(directory)
 
-    if os.path.exists(filepath):
+    if os.path.exists(filepath) and utils.usecache:
         result = utils.read_result_from_cache(filepath)
     else:
-        utils.create_directiry(directory)
 
         with dbconn.connection() as connection:
             cur = connection.cursor()
             cur.execute(query)
             result = cur.fetchall()
 
-        utils.write_result_to_json(filepath, result)
+        if utils.usecache:
+            utils.create_directiry(directory)
+            utils.write_result_to_json(filepath, result)
 
     return result

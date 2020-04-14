@@ -15,17 +15,16 @@ def get_employees(dbconn, prefix):
     directory = "users"
     filepath = '{0}/{1}.txt'.format(directory, prefix)
 
-    if os.path.exists(filepath):
+    if os.path.exists(filepath) and utils.usecache:
         result = utils.read_result_from_cache(filepath)
     else:
-        utils.create_directiry(directory)
-
         with dbconn.connection() as connection:
             cur = connection.cursor()
             cur.execute(query)
             result = cur.fetchall()
-
-        utils.write_result_to_json(filepath, result)
+        if utils.usecache:
+            utils.create_directiry(directory)
+            utils.write_result_to_json(filepath, result)
 
     return result
 
@@ -197,17 +196,16 @@ def get_manager(dbconn, userId):
     directory = "managers"
     filepath = '{0}/{1}.txt'.format(directory, userId)
 
-    if os.path.exists(filepath):
+    if os.path.exists(filepath) and utils.usecache:
         result = utils.read_result_from_cache(filepath)
     else:
-        utils.create_directiry(directory)
-
         with dbconn.connection() as connection:
             cur = connection.cursor()
             cur.execute(query)
             result = cur.fetchall()
-
-        utils.write_result_to_json(filepath, result)
+        if utils.usecache:
+            utils.create_directiry(directory)
+            utils.write_result_to_json(filepath, result)
 
     return result
 

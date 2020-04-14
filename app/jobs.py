@@ -26,17 +26,16 @@ def get_job_with_filter(dbconn, performer, discriminator, filter="", create_date
     directory = f"jobs/{performer}"
     filepath = '{0}/{1}_{2}_{3}.txt'.format(directory, performer, discriminator, filter)
 
-    if os.path.exists(filepath):
+    if os.path.exists(filepath) and utils.usecache:
         result = utils.read_result_from_cache(filepath)
     else:
-        utils.create_directiry(directory)
-
         with dbconn.connection() as connection:
             cur = connection.cursor()
             cur.execute(query)
             result = cur.fetchall()
-
-        utils.write_result_to_json(filepath, result)
+        if utils.usecache:
+            utils.create_directiry(directory)
+            utils.write_result_to_json(filepath, result)
 
     return result
 
@@ -107,17 +106,16 @@ def get_notice_with_filter(dbconn, performer, discriminator, filter=""):
     directory = f"notices/{performer}"
     filepath = '{0}/{1}_{2}_{3}.txt'.format(directory, performer, discriminator, filter)
 
-    if os.path.exists(filepath):
+    if os.path.exists(filepath) and utils.usecache:
         result = utils.read_result_from_cache(filepath)
     else:
-        utils.create_directiry(directory)
-
         with dbconn.connection() as connection:
             cur = connection.cursor()
             cur.execute(query)
             result = cur.fetchall()
-
-        utils.write_result_to_json(filepath, result)
+        if utils.usecache:
+            utils.create_directiry(directory)
+            utils.write_result_to_json(filepath, result)
 
     return result
 
@@ -141,16 +139,15 @@ def get_task_with_filter(dbconn, author, discriminator, filter=""):
     directory = f"tasks/{author}"
     filepath = '{0}/{1}_{2}_{3}.txt'.format(directory, author, discriminator, filter)
 
-    if os.path.exists(filepath):
+    if os.path.exists(filepath) and utils.usecache:
         result = utils.read_result_from_cache(filepath)
     else:
-        utils.create_directiry(directory)
-
         with dbconn.connection() as connection:
             cur = connection.cursor()
             cur.execute(query)
             result = cur.fetchall()
-
-        utils.write_result_to_json(filepath, result)
+        if utils.usecache:
+            utils.create_directiry(directory)
+            utils.write_result_to_json(filepath, result)
 
     return result

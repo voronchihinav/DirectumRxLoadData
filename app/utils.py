@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 import os
 import json
+
+usecache = True
 
 def create_directiry(directory):
     if not os.path.exists(directory):

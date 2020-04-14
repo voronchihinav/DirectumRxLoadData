@@ -14,9 +14,10 @@ import db
 import departments
 import substitution
 import cbr
-import json
+import utils
 
 create_date = None
+
 
 template = {
   "swagger": "2.0",
@@ -905,10 +906,12 @@ if __name__ == '__main__':
     parser.add_argument("-p", "--pwd", dest="password", help="set user name password")
     parser.add_argument("-pr", "--port", dest="port", help="port", default=None)
     parser.add_argument("-cd", "--cdate", dest="createdate", help="date create tasts", default=None)
+    parser.add_argument("-ca", "--cache", dest="usecache", help="use cache", default=1)
     args = parser.parse_args()
     print(args)
     dbconn = db.dbconnection(args.engine, args.host, args.dbname, args.username, args.password, args.port)
     create_date = args.createdate
+    utils.usecache = bool(int(args.usecache))
     app.debug = True  # enables auto reload during development
     app.run(host='0.0.0.0', port=5555)
     app.run()
