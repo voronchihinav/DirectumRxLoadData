@@ -89,22 +89,19 @@ def get_all_notices(dbconn, performer, discriminator, skip, filter=""):
         return result
 
 
-def get_notice_with_filter(dbconn, performer, discriminator, filter=""):
+def get_notice_with_filter(dbconn, performer, discriminator, filter="", create_date=None):
     if filter is None:
         filter = ""
     query = "SELECT "
     query = query + "a.id FROM sungero_wf_assignment a " \
             + "WHERE a.performer = {0} ".format(performer) \
-            + "AND a.discriminator = '{0}' ".format(discriminator) \
-            + "AND a.subject like '%{0}%' ".format(filter)
-    if dbconn.engine == 'psql':
-        query = query + "AND a.IsRead = false "
-    else:
-        query = query + "AND a.IsRead = 0 "
+            + "AND a.discriminator = '{0}' ".format(discriminator)
+    if create_date is not None:
+        query = query + "AND a.created > '{0}' ".format(create_date)
     query = query + "ORDER BY a.created desc "
 
     directory = f"notices/{performer}"
-    filepath = '{0}/{1}_{2}_{3}.txt'.format(directory, performer, discriminator, filter)
+    filepath = '{0}/{1}_{2}_{3}_{4}.txt'.format(directory, performer, discriminator, filter, create_date)
 
     if os.path.exists(filepath) and utils.usecache:
         result = utils.read_result_from_cache(filepath)

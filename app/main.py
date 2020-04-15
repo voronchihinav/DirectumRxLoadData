@@ -440,7 +440,7 @@ def get_unreadnotice(performer, discriminator, filter):
               200:
                 description: Return unread notice for user with filter
             """
-    results = jobs.get_notice_with_filter(dbconn, performer, discriminator, filter)
+    results = jobs.get_notice_with_filter(dbconn, performer, discriminator, filter, create_date)
     return response.get_scalar_result(results)
 
 
@@ -467,7 +467,7 @@ def ex_get_unreadnotice(performer, discriminator):
               200:
                 description: Return unread notice for user
             """
-    results = jobs.get_notice_with_filter(dbconn, performer, discriminator)
+    results = jobs.get_notice_with_filter(dbconn, performer, discriminator, None, create_date)
     return response.get_scalar_result(results)
 
 
