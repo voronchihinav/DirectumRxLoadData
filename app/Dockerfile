@@ -2,7 +2,8 @@ FROM ubuntu:latest
 MAINTAINER Aleksandr Voronchihin 'voronchihinav@gmail.com'
 RUN apt-get update -y
 RUN apt-get install
-RUN apt-get install -y python3-pip python3-dev build-essential locales
+RUN apt-get install -y python3-pip python3-dev build-essential
+RUN apt-get install -y locales
 RUN locale-gen en_US.UTF-8
 COPY . /app
 WORKDIR /app
