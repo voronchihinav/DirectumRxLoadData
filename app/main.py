@@ -13,7 +13,6 @@ import users
 import db
 import departments
 import substitution
-import cbr
 import utils
 
 create_date = None
@@ -805,76 +804,6 @@ def get_bodyId(author, extension):
             """
     results = docs.get_bodyId(dbconn, author, extension)
     return response.get_multi_result(results)
-
-
-@app.route('/cbr/storagearticles', methods=['GET'])
-def get_storagearticles():
-    """Return list of storagearticles
-            ---
-            tags:
-                - cbr
-            responses:
-              200:
-                description: Return list of storagearticles
-            """
-    result = cbr.get_storagearticles(dbconn)
-    return response.get_multi_result(result)
-
-
-@app.route('/cbr/nomenclatures/<string:filter>', methods=['GET'])
-def get_nomenclatures_with_filter(filter):
-    """Return nomenclature
-            ---
-            tags:
-                - cbr
-            parameters:
-              - in: path
-                name: filter
-                type: string
-                required: false
-                description: Nomenclaturess name
-            responses:
-              200:
-                description: Return nomenclature
-            """
-    results = cbr.get_nomenclatures(dbconn, filter)
-    return response.get_scalar_result(results)
-
-
-@app.route('/cbr/nomenclatures', methods=['GET'])
-def get_nomenclatures():
-    """Return nomenclature
-            ---
-            tags:
-                - cbr
-            parameters:
-            responses:
-              200:
-                description: Return nomenclature
-            """
-    results = cbr.get_nomenclatures(dbconn, None)
-    return response.get_multi_result(results)
-
-
-@app.route('/cbr/documentkind/<int:documenttypeId>', methods=['GET'])
-def get_documentkind(documenttypeId):
-    """Return documentkind
-            ---
-            tags:
-                - cbr
-            parameters:
-              - in: path
-                name: documenttype
-                type: integer
-                format: int
-                required: true
-                description: Documenttype Id
-            responses:
-              200:
-                description: Return documentkind ID
-            """
-    results = cbr.get_documentkind(dbconn, documenttypeId)
-    return response.get_scalar_result(results)
 
 
 @app.route('/role/<string:filter>', methods=['GET'])
