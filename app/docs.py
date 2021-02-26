@@ -73,3 +73,24 @@ def get_bodyId(dbconn, author, extension):
 
         return result
 
+
+def get_doc_by_extension(dbconn, author, extension):
+    query = "SELECT "
+    if dbconn.engine == 'mssql':
+        query = query + " TOP 30 "
+
+    query = query + "d.id " \
+            + "FROM sungero_content_edoc d " \
+            + "INNER JOIN Sungero_Content_AssociatedApp aa " \
+            + "ON d.AssociatedApplication = aa.Id " \
+            + "WHERE d.author = '{0}' ".format(author) \
+            + "AND aa.extension = '{0}' ".format(extension)
+    if dbconn.engine == 'psql':
+        query = query \
+                + "LIMIT 30"
+
+    with dbconn.connection() as connection:
+        cur = connection.cursor()
+        cur.execute(query)
+        result = cur.fetchall()
+        return result

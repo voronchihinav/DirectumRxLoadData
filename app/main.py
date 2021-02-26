@@ -826,6 +826,85 @@ def get_role_with_filter(filter):
     return response.get_scalar_result(results)
 
 
+@app.route('/docs/<int:author>/<string:extension>', methods=['GET'])
+def get_doc_by_extension(author, extension):
+    """Return id of document for author with extension of last version
+            ---
+            tags:
+                - docs
+            parameters:
+              - in: path
+                name: author
+                type: integer
+                format: int
+                required: true
+                description: Users Id
+              - in: path
+                name: extension
+                type: string
+                required: true
+                description: Extension of documents
+            responses:
+              200:
+                description: Return id for author with extension of last version
+            """
+    results = docs.get_doc_by_extension(dbconn, author, extension)
+    return response.get_scalar_result(results)
+
+
+@app.route('/folders/specialfolder/<uuid:specialfoldertype>/<int:author>', methods=['GET'])
+def get_special_folder(author, specialfoldertype):
+    """Return special folder for author
+            ---
+            tags:
+                - folders
+            parameters:
+              - in: path
+                name: specialfoldertype
+                type: string
+                format: uuid
+                required: true
+                description: Guid of type of special folder
+              - in: path
+                name: author
+                type: integer
+                format: int
+                required: true
+                description: Users Id
+            responses:
+              200:
+                description: Return special folder for author
+            """
+    results = folders.get_special_folder(dbconn, author, specialfoldertype)
+    return response.get_scalar_result(results)
+
+
+@app.route('/nomad/sdn/<int:userid>/<string:cdid>', methods=['GET'])
+def get_sdn(userid, cdid):
+    """Return SDN for user with CDID
+            ---
+            tags:
+                - nomad
+            parameters:
+              - in: path
+                name: user
+                type: integer
+                format: int
+                required: true
+                description: user ID
+              - in: path
+                name: cdid
+                type: string
+                required: true
+                description: Users CDID
+            responses:
+              200:
+                description: Return SDN for user with CDID
+            """
+    results = nomad.get_sdn(dbconn, userid, cdid)
+    return response.get_scalar_result(results)
+
+
 if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument("-e", "--engine", dest="engine", help="set sql engine")
