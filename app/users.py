@@ -5,12 +5,17 @@ import os
 import utils
 
 
+csv_path = "user-credentials.csv"
+logins_from_csv = utils.read_login_from_csv(csv_path)
+
+
 def get_employees(dbconn, prefix):
     query = "SELECT e.Id, l.loginname " \
             "FROM sungero_core_recipient e " \
             "INNER JOIN sungero_core_login l " \
             "ON e.login = l.Id " \
-            "WHERE l.loginname like '%{0}%'".format(prefix)
+            "WHERE l.loginname like '%{0}%' "\
+            "AND l.loginname in ({1}) ".format(prefix, logins_from_csv)
 
     directory = "users"
     filepath = '{0}/{1}.txt'.format(directory, prefix)
@@ -65,7 +70,8 @@ def get_logins_with_jobs_inprocess(dbconn, job_type, count_jobs, filter="", crea
             + "INNER JOIN sungero_core_login l " \
             + "ON r.login = l.id " \
             + " WHERE a.Status = 'InProcess' AND r.Status = 'Active' AND a.discriminator ='{0}' ".format(job_type) \
-            + "AND a.subject like '%{0}%' ".format(filter)
+            + "AND a.subject like '%{0}%' ".format(filter) \
+            + "AND l.loginname in ({0}) ".format(logins_from_csv)
     if create_date != None:
         query = query + "AND a.created > '{0}' ".format(create_date)
 
@@ -91,7 +97,8 @@ def get_logins_with_unread_notices(dbconn, job_type, count_notices, filter):
             + "INNER JOIN sungero_core_login l " \
             + "ON r.login = l.id " \
             + "WHERE a.discriminator ='{0}' ".format(job_type) \
-            + "AND a.subject like '%{0}%' ".format(filter)
+            + "AND a.subject like '%{0}%' ".format(filter) \
+            + "AND l.loginname in ({0}) ".format(logins_from_csv)
     if dbconn.engine == 'psql':
         query = query + "AND a.IsRead = false "
     else:
@@ -147,20 +154,24 @@ def get_employee(dbconn):
 
         return result
 
+
 def get_employees_count(dbconn, count):
     query = "SELECT "
     if dbconn.engine == 'mssql':
         query = query + " TOP {0} ".format(count)
-    query = query + "id " \
-            + "FROM sungero_core_recipient " \
-            + "WHERE discriminator = 'B7905516-2BE5-4931-961C-CB38D5677565' " \
-            + "AND status = 'Active' "
+    query = query + "e.id " \
+            + "FROM sungero_core_recipient e " \
+            + "INNER JOIN sungero_core_login l " \
+            + "ON e.login = l.Id " \
+            + "WHERE l.loginname in ({0}) ".format(logins_from_csv) \
+            + "AND e.discriminator = 'B7905516-2BE5-4931-961C-CB38D5677565' " \
+            + "AND e.status = 'Active' "
     if dbconn.engine == 'mssql':
         query = query \
             + "ORDER BY NEWID() "
     if dbconn.engine == 'psql':
         query = query \
-		    + "ORDER BY RANDOM() " \
+            + "ORDER BY RANDOM() " \
             + "LIMIT '{0}' ".format(count)
 
     with dbconn.connection() as connection:
@@ -169,7 +180,6 @@ def get_employees_count(dbconn, count):
         result = cur.fetchall()
 
         return result
-
 
 
 def get_department(dbconn):
