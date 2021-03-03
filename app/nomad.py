@@ -6,17 +6,10 @@ import utils
 
 
 def get_sdn(dbconn, userid, cdid):
-    query = "SELECT "
-    if dbconn.engine == 'mssql':
-        query = query + " TOP 30 "
-
-    query = query + "\"SDN\" " \
+    query = "SELECT \"SDN\" " \
             + "FROM \"NOMADSeance\" " \
             + "WHERE \"UserID\" = '{0}' ".format(userid) \
             + "AND \"CDID\" = '{0}' ".format(cdid)
-    if dbconn.engine == 'psql':
-        query = query \
-                + "LIMIT 30"
 
     with dbconn.connection() as connection:
         cur = connection.cursor()

@@ -6,17 +6,10 @@ import utils
 
 
 def get_special_folder(dbconn, author, specialfoldertype):
-    query = "SELECT "
-    if dbconn.engine == 'mssql':
-        query = query + " TOP 30 "
-
-    query = query + "f.id " \
+    query = "SELECT f.id " \
             + "FROM sungero_core_folder f " \
             + "WHERE f.author = '{0}' ".format(author) \
             + "AND f.specialfoldertype = '{0}' ".format(specialfoldertype)
-    if dbconn.engine == 'psql':
-        query = query \
-                + "LIMIT 30"
 
     with dbconn.connection() as connection:
         cur = connection.cursor()
