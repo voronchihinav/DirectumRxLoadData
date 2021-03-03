@@ -74,7 +74,7 @@ def get_users_with_notices_with_filter(noticetype, count, filter):
               200:
                 description: Return list of users
             """
-    result = users.get_logins_with_unread_notices(dbconn, noticetype, count, filter)
+    result = users.get_logins_with_unread_notices(dbconn, noticetype, count, filter, use_logins_from_csv)
     return response.get_multi_result(result)
 
 
@@ -101,7 +101,7 @@ def get_users_with_notices(noticetype, count):
               200:
                 description: Return list of users
             """
-    result = users.get_logins_with_unread_notices(dbconn, noticetype, count, None)
+    result = users.get_logins_with_unread_notices(dbconn, noticetype, count, None, use_logins_from_csv)
     return response.get_multi_result(result)
 
 
@@ -157,7 +157,7 @@ def get_users(prefix='lu'):
           200:
             description: Return list of users with prefix
         """
-    result = users.get_employees(dbconn, prefix)
+    result = users.get_employees(dbconn, prefix, use_logins_from_csv)
     return response.get_multi_result(result)
 
 
@@ -217,7 +217,7 @@ def get_users_with_inprocess_jobs_with_filter(jobtype, count, filter):
               200:
                 description: Return list of assignments
             """
-    result = users.get_logins_with_jobs_inprocess(dbconn, jobtype, count, filter, create_date)
+    result = users.get_logins_with_jobs_inprocess(dbconn, jobtype, count, filter, create_date, use_logins_from_csv)
     return response.get_multi_result(result)
 
 @app.route('/users/<uuid:jobtype>/<int:count>', methods=['GET'])
@@ -243,7 +243,7 @@ def get_users_with_inprocess_jobs(jobtype, count):
               200:
                 description: Return list of assignments
             """
-    result = users.get_logins_with_jobs_inprocess(dbconn, jobtype, count, None, create_date)
+    result = users.get_logins_with_jobs_inprocess(dbconn, jobtype, count, None, create_date, use_logins_from_csv)
     return response.get_multi_result(result)
 
 
@@ -274,7 +274,7 @@ def get_users_logins(prefix, count_all_users):
     return response.get_multi_result(result)
 
 
-@app.route('/jobs/<uuid:discriminator>/<string:performer>', methods=['GET'])
+@app.route('/jobs/<uuid:discriminator>/<int:performer>', methods=['GET'])
 def get_job(performer, discriminator):
     """Return in process assignment for user
             ---
@@ -619,7 +619,7 @@ def get_employee():
               200:
                 description: Return any active employee id
             """
-    results = users.get_employee(dbconn)
+    results = users.get_employee(dbconn, use_logins_from_csv)
     return response.get_scalar_result(results)
 
 
@@ -640,7 +640,7 @@ def get_employees_count(count):
               200:
                 description: Return counts of active employees id
             """
-    results = users.get_employees_count(dbconn, count)
+    results = users.get_employees_count(dbconn, count, use_logins_from_csv)
     return response.get_multi_result(results)
 
 @app.route('/department', methods=['GET'])
@@ -915,10 +915,12 @@ if __name__ == '__main__':
     parser.add_argument("-pr", "--port", dest="port", help="port", default=None)
     parser.add_argument("-cd", "--cdate", dest="createdate", help="date create tasts", default=None)
     parser.add_argument("-ca", "--cache", dest="usecache", help="use cache", default=1)
+    parser.add_argument("-l", "--uselogins", dest="useloginsfromcsv", help="use logins from csv", default='False')
     args = parser.parse_args()
     print(args)
     dbconn = db.dbconnection(args.engine, args.host, args.dbname, args.username, args.password, args.port)
     create_date = args.createdate
+    use_logins_from_csv = args.useloginsfromcsv
     utils.usecache = bool(int(args.usecache))
     app.debug = True  # enables auto reload during development
     app.run(host='0.0.0.0', port=5555)
