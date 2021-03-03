@@ -9,14 +9,15 @@ csv_path = "user-credentials.csv"
 logins_from_csv = utils.read_login_from_csv(csv_path)
 
 
-def get_employees(dbconn, prefix):
+def get_employees(dbconn, prefix, use_logins_from_csv):
     query = "SELECT e.Id, l.loginname " \
             "FROM sungero_core_recipient e " \
             "INNER JOIN sungero_core_login l " \
             "ON e.login = l.Id " \
-            "WHERE l.loginname like '%{0}%' "\
-            "AND l.loginname in ({1}) ".format(prefix, logins_from_csv)
-
+            "WHERE l.loginname like '%{0}%' ".format(prefix)
+    if use_logins_from_csv != 'False':
+        query = query + "AND l.loginname in ({0}) ".format(logins_from_csv)
+          
     directory = "users"
     filepath = '{0}/{1}.txt'.format(directory, prefix)
 
@@ -60,7 +61,7 @@ def get_person(dbconn):
         return result
 
 
-def get_logins_with_jobs_inprocess(dbconn, job_type, count_jobs, filter="", create_date=None):
+def get_logins_with_jobs_inprocess(dbconn, job_type, count_jobs, filter, use_logins_from_csv, create_date=None):
     if filter is None:
         filter = ""
     query = "SELECT l.loginname " \
@@ -70,8 +71,9 @@ def get_logins_with_jobs_inprocess(dbconn, job_type, count_jobs, filter="", crea
             + "INNER JOIN sungero_core_login l " \
             + "ON r.login = l.id " \
             + " WHERE a.Status = 'InProcess' AND r.Status = 'Active' AND a.discriminator ='{0}' ".format(job_type) \
-            + "AND a.subject like '%{0}%' ".format(filter) \
-            + "AND l.loginname in ({0}) ".format(logins_from_csv)
+            + "AND a.subject like '%{0}%' ".format(filter)
+    if use_logins_from_csv != 'False':
+        query = query + "AND l.loginname in ({0}) ".format(logins_from_csv)
     if create_date != None:
         query = query + "AND a.created > '{0}' ".format(create_date)
 
@@ -87,7 +89,7 @@ def get_logins_with_jobs_inprocess(dbconn, job_type, count_jobs, filter="", crea
         return result
 
 
-def get_logins_with_unread_notices(dbconn, job_type, count_notices, filter):
+def get_logins_with_unread_notices(dbconn, job_type, count_notices, filter, use_logins_from_csv):
     if filter is None:
         filter = ""
     query = "SELECT l.loginname " \
@@ -97,8 +99,9 @@ def get_logins_with_unread_notices(dbconn, job_type, count_notices, filter):
             + "INNER JOIN sungero_core_login l " \
             + "ON r.login = l.id " \
             + "WHERE a.discriminator ='{0}' ".format(job_type) \
-            + "AND a.subject like '%{0}%' ".format(filter) \
-            + "AND l.loginname in ({0}) ".format(logins_from_csv)
+            + "AND a.subject like '%{0}%' ".format(filter) 
+    if use_logins_from_csv != 'False':
+        query = query + "AND l.loginname in ({0}) ".format(logins_from_csv)
     if dbconn.engine == 'psql':
         query = query + "AND a.IsRead = false "
     else:
@@ -141,11 +144,15 @@ def get_users_logins(dbconn, prefix, count_all_users):
         return result
 
 
-def get_employee(dbconn):
-    query = "SELECT id " \
-            + "FROM sungero_core_recipient " \
-            + "WHERE discriminator = 'B7905516-2BE5-4931-961C-CB38D5677565' " \
-            + "AND status = 'Active' "
+def get_employee(dbconn, use_logins_from_csv):
+    query = "SELECT r.id " \
+            + "FROM sungero_core_recipient r " \
+            + "INNER JOIN sungero_core_login l " \
+            + "ON r.login = l.id " \
+            + "WHERE r.discriminator = 'B7905516-2BE5-4931-961C-CB38D5677565' " \
+            + "AND r.status = 'Active' "
+    if use_logins_from_csv != 'False':
+        query = query + "AND l.loginname in ({0}) ".format(logins_from_csv)
 
     with dbconn.connection() as connection:
         cur = connection.cursor()
@@ -155,7 +162,7 @@ def get_employee(dbconn):
         return result
 
 
-def get_employees_count(dbconn, count):
+def get_employees_count(dbconn, count, use_logins_from_csv):
     query = "SELECT "
     if dbconn.engine == 'mssql':
         query = query + " TOP {0} ".format(count)
@@ -163,9 +170,10 @@ def get_employees_count(dbconn, count):
             + "FROM sungero_core_recipient e " \
             + "INNER JOIN sungero_core_login l " \
             + "ON e.login = l.Id " \
-            + "WHERE l.loginname in ({0}) ".format(logins_from_csv) \
             + "AND e.discriminator = 'B7905516-2BE5-4931-961C-CB38D5677565' " \
             + "AND e.status = 'Active' "
+    if use_logins_from_csv != 'False':
+        query = query + "AND l.loginname in ({0}) ".format(logins_from_csv)
     if dbconn.engine == 'mssql':
         query = query \
             + "ORDER BY NEWID() "
