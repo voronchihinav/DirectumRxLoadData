@@ -5,6 +5,7 @@ import json
 import csv
 
 usecache = True
+use_logins_from_csv = False
 
 def create_directiry(directory):
     if not os.path.exists(directory):
