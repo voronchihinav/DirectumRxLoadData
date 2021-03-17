@@ -144,13 +144,15 @@ def get_users_logins(dbconn, prefix, count_all_users):
         return result
 
 
-def get_employee(dbconn):
+def get_employee(dbconn, prefix):
     query = "SELECT r.id " \
             + "FROM sungero_core_recipient r " \
             + "INNER JOIN sungero_core_login l " \
             + "ON r.login = l.id " \
             + "WHERE r.discriminator = 'B7905516-2BE5-4931-961C-CB38D5677565' " \
             + "AND r.status = 'Active' "
+    if prefix != None:
+        query = query + "AND l.loginname like '{0}%' ".format(prefix)
     if utils.use_logins_from_csv:
         query = query + "AND l.loginname in ({0}) ".format(logins_from_csv)
 

@@ -619,7 +619,27 @@ def get_employee():
               200:
                 description: Return any active employee id
             """
-    results = users.get_employee(dbconn)
+    results = users.get_employee(dbconn, None)
+    return response.get_scalar_result(results)
+
+@app.route('/employee/<string:prefix>', methods=['GET'])
+def get_employee_by_prefix(prefix):
+    """Return active employee id by prefix
+            ---
+            tags:
+                - employee
+            parameters:
+              - in: path
+                name: prefix
+                type: string
+                format: string
+                required: true
+                description: Users prefix
+            responses:
+              200:
+                description: Return active employee id by prefix
+            """
+    results = users.get_employee(dbconn, prefix)
     return response.get_scalar_result(results)
 
 
