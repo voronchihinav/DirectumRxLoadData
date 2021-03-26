@@ -660,8 +660,35 @@ def get_employees_count(count):
               200:
                 description: Return counts of active employees id
             """
-    results = users.get_employees_count(dbconn, count)
+    results = users.get_employees_count_with_prefix(dbconn, count, None)
     return response.get_multi_result(results)
+
+
+@app.route('/employees/<int:count>/<string:prefix>', methods=['GET'])
+def get_employees_count_with_prefix(count, prefix):
+    """Return any active employee id
+            ---
+            tags:
+                - employee
+            parameters:
+              - in: path
+                name: count
+                type: integer
+                format: int
+                required: true
+                description: Users count
+                name: prefix
+                type: string
+                format: string
+                required: true
+                description: Users prefix
+            responses:
+              200:
+                description: Return counts of active employees id by prefix
+            """
+    results = users.get_employees_count_with_prefix(dbconn, count, prefix)
+    return response.get_multi_result(results)
+
 
 @app.route('/department', methods=['GET'])
 def get_department():

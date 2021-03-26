@@ -164,7 +164,7 @@ def get_employee(dbconn, prefix):
         return result
 
 
-def get_employees_count(dbconn, count):
+def get_employees_count_with_prefix(dbconn, count, prefix=""):
     query = "SELECT "
     if dbconn.engine == 'mssql':
         query = query + " TOP {0} ".format(count)
@@ -174,6 +174,8 @@ def get_employees_count(dbconn, count):
             + "ON e.login = l.Id " \
             + "AND e.discriminator = 'B7905516-2BE5-4931-961C-CB38D5677565' " \
             + "AND e.status = 'Active' "
+    if prefix != None:
+        query = query + "AND l.loginname like '{0}%' ".format(prefix)
     if utils.use_logins_from_csv:
         query = query + "AND l.loginname in ({0}) ".format(logins_from_csv)
     if dbconn.engine == 'mssql':
