@@ -164,7 +164,7 @@ def get_employee(dbconn, prefix):
         return result
 
 
-def get_employees_count_with_prefix(dbconn, count, prefix=""):
+def get_employees_count_with_prefix(dbconn, count, userid, prefix=""):
     query = "SELECT "
     if dbconn.engine == 'mssql':
         query = query + " TOP {0} ".format(count)
@@ -173,7 +173,8 @@ def get_employees_count_with_prefix(dbconn, count, prefix=""):
             + "INNER JOIN sungero_core_login l " \
             + "ON e.login = l.Id " \
             + "AND e.discriminator = 'B7905516-2BE5-4931-961C-CB38D5677565' " \
-            + "AND e.status = 'Active' "
+            + "AND e.status = 'Active' " \
+            + "AND e.id != '{0}' ".format(userid) 
     if prefix != None:
         query = query + "AND l.loginname like '{0}%' ".format(prefix)
     if utils.use_logins_from_csv:

@@ -664,8 +664,8 @@ def get_employees_count(count):
     return response.get_multi_result(results)
 
 
-@app.route('/employees/<int:count>/<string:prefix>', methods=['GET'])
-def get_employees_count_with_prefix(count, prefix):
+@app.route('/employees/<int:count>/<int:userid>/<string:prefix>', methods=['GET'])
+def get_employees_count_with_prefix(count, userid, prefix):
     """Return any active employee id
             ---
             tags:
@@ -682,11 +682,16 @@ def get_employees_count_with_prefix(count, prefix):
                 format: string
                 required: true
                 description: Users prefix
+                name: userId
+                type: integer
+                format: int
+                required: true
+                description: Users Id
             responses:
               200:
                 description: Return counts of active employees id by prefix
             """
-    results = users.get_employees_count_with_prefix(dbconn, count, prefix)
+    results = users.get_employees_count_with_prefix(dbconn, count, userid, prefix)
     return response.get_multi_result(results)
 
 
