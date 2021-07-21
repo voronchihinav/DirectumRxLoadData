@@ -2,7 +2,7 @@ Flask
 itsdangerous
 Jinja2
 MarkupSafe
-psycopg2-binary
+psycopg2-binary~=2.8.6
 pymssql
 Werkzeug
 flasgger
