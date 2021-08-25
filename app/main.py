@@ -588,6 +588,34 @@ def get_doc(author, discriminator):
     return response.get_scalar_result(results)
 
 
+@app.route('/docs/sign/<uuid:discriminator>/<int:author>', methods=['GET'])
+def get_sign_doc(author, discriminator):
+    """Return document for author
+            ---
+            tags:
+                - docs
+            parameters:
+              - in: path
+                name: discriminator
+                type: string
+                format: uuid
+                required: true
+                description: Guid of document
+              - in: path
+                name: author
+                type: integer
+                format: int
+                required: true
+                description: Users Id
+            responses:
+              200:
+                description: Return document for author
+            """
+    results = docs.get_sign_doc_with_filter(dbconn, author, discriminator)
+    return response.get_scalar_result(results)
+
+
+
 @app.route('/docs/<int:author>', methods=['GET'])
 def get_any_doc(author):
     """Return any document for author

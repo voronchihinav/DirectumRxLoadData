@@ -94,3 +94,38 @@ def get_doc_by_extension(dbconn, author, extension):
         cur.execute(query)
         result = cur.fetchall()
         return result
+
+
+def get_sign_doc_with_filter(dbconn, author, discriminator, filter=""):
+    if filter is None:
+        filter = ""
+    query = "SELECT "
+    if dbconn.engine == 'mssql':
+        query = query + " TOP 10 "
+    query = query + "d.id FROM sungero_content_edoc d " \
+            + "WHERE d.author = {0} ".format(author) \
+            + "AND d.discriminator = '{0}' ".format(discriminator) \
+            + "AND d.name like '%{0}%' ".format(filter) \
+            + "AND d.hasversions = 'true' " \
+            + "AND d.intapprstate_docflow_sungero = 'signed' " \
+            + "ORDER BY d.created desc "
+    if dbconn.engine == 'psql':
+        query = query \
+                + "LIMIT 10"
+
+    directory = f"docs/{author}"
+    filepath = '{0}/{1}_{2}_{3}.txt'.format(directory, author, discriminator, filter)
+
+    if os.path.exists(filepath) and utils.usecache:
+        result = utils.read_result_from_cache(filepath)
+    else:
+
+        with dbconn.connection() as connection:
+            cur = connection.cursor()
+            cur.execute(query)
+            result = cur.fetchall()
+        if utils.usecache:
+            utils.create_directiry(directory)
+            utils.write_result_to_json(filepath, result)
+
+    return result
