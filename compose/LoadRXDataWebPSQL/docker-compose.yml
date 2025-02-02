@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  rest:
+    image: localhost:5000/loadrxdata
+    ports:
+      - '5555:5555'
+    command: ["/bin/bash", "-c", "source /myenv/bin/activate && python3 main.py -e psql -ht <host> -d <DB> -n <username> -p <userpass> -pr <port> -cd 2019-03-15 -ca 0 -l 1"]
+    restart: always
+    volumes:
+      - ./app:/app

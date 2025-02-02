@@ -35,6 +35,22 @@ def get_employees(dbconn, prefix):
     return result
 
 
+def get_user_by_login_name(dbconn, login_name):
+    query = "SELECT e.id " \
+        + "FROM sungero_core_recipient e " \
+        + "INNER JOIN sungero_core_login l " \
+        + "ON e.login = l.Id " \
+        + "AND e.discriminator = 'B7905516-2BE5-4931-961C-CB38D5677565' " \
+        + "AND l.loginname = '{0}' ".format(login_name)
+
+    with dbconn.connection() as connection:
+        cur = connection.cursor()
+        cur.execute(query)
+        result = cur.fetchall()
+
+        return result
+
+
 def get_persons(dbconn):
     query = "SELECT Id, LastName, FirstName " \
             "FROM Sungero_Parties_Counterparty " \
@@ -144,6 +160,23 @@ def get_users_logins(dbconn, prefix, count_all_users):
         return result
 
 
+def get_all_users_logins(dbconn):
+    query = "SELECT "
+    query = query + "l.loginname " \
+            + "FROM sungero_core_recipient r " \
+            + "INNER JOIN sungero_core_login l " \
+            + "ON r.login = l.id " \
+            + "WHERE r.status = 'active' AND r.discriminator = 'b7905516-2be5-4931-961c-cb38d5677565' " \
+            + "ORDER BY l.loginname "
+
+    with dbconn.connection() as connection:
+        cur = connection.cursor()
+        cur.execute(query)
+        result = cur.fetchall()
+
+        return result
+
+
 def get_employee(dbconn, prefix):
     query = "SELECT r.id " \
             + "FROM sungero_core_recipient r " \
@@ -195,16 +228,16 @@ def get_employees_count_with_prefix(dbconn, count, userid, prefix=""):
         return result
 
 
-def get_department(dbconn):
-    query = "SELECT id " \
-            + "FROM sungero_core_recipient " \
-            + "WHERE discriminator = '61B1C19F-26E2-49A5-B3D3-0D3618151E12' " \
+def get_department_members(dbconn, departmentid):
+    query = "SELECT l.member " \
+            + "FROM sungero_core_recipientlink l join sungero_core_recipient r on l.member = r.id " \
+            + "WHERE recipient = {0} and r.status = 'Active' ".format(departmentid) \
             + "AND status = 'Active' "
 
     with dbconn.connection() as connection:
         cur = connection.cursor()
         cur.execute(query)
-        result = cur.fetchall()
+        result = cur.fetchmany(300)
 
         return result
 

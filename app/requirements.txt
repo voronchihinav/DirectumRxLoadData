@@ -3,6 +3,6 @@ itsdangerous
 Jinja2
 MarkupSafe
 psycopg2-binary~=2.8.6
-pymssql
+pymssql==2.2.0
 Werkzeug
 flasgger
